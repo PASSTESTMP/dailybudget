@@ -72,3 +72,32 @@ __limit__ = min(100, 9890/28) = 100
 __actual_limit__ == 100
 __borrow__ == 0
 __budget__ == 9890
+
+
+If __spending__ is less than 0 (it is paid)
+
+pop-up __updateOrAdd__
+
+A: __updateLimit()__
+B: __addSpending()__
+
+
+
+
+## FEATURES:
+
+### Description:
+
+Start app and all values are as before las close.
+
+Write spending or STT.
+
+Snyc with cloud - Firebase.
+
+All texts should be depends from language select in settings
+
+### List:
+1. SharedPreferences
+2. STT
+3. Firebase
+4. Many laguages
