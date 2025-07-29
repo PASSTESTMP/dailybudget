@@ -1,6 +1,10 @@
+import 'package:dailybudget/bloc/limit_bloc.dart';
+import 'package:dailybudget/bloc/limit_event.dart';
+import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OverviewPage extends StatelessWidget {
   const OverviewPage({Key? key}) : super(key: key);
@@ -55,13 +59,7 @@ class OverviewPage extends StatelessWidget {
   void _startSTT() {
 
   }
-
-  void _addSpending(double spending) {
-    // This function should handle the logic to add spending
-    // and update the budget and limits accordingly.
-    // For now, it's just a placeholder.
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     // Example limit value and color
@@ -81,81 +79,86 @@ class OverviewPage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Limit Indicator
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    value: limitValue / 100,
-                    strokeCap: StrokeCap.round,
-                    strokeWidth: 30,
-                    strokeAlign: 5,
-                    color: circleColor,
-                    backgroundColor: Colors.grey[300],
-                  ),
-                  Text(
-                    '${limitValue.toInt()}',
-                    style: const TextStyle(
-                      fontSize: 84,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
+        child: BlocBuilder<LimitBloc, LimitState>(
+          builder: (context, state) {
+            limitValue = state.actualLimit; // Assuming state has actualLimit
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Limit Indicator
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Enter Spending',
-                      border: OutlineInputBorder(),
-                      suffixText: "zł"
-                    ),
-                    keyboardType: TextInputType.numberWithOptions(
-                      signed: true,
-                      decimal: true,
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'^-?\d{0,10}[,]?\d{0,2}$'), // pozwala na liczby, przecinek, minus
+                  width: 300,
+                  height: 300,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        value: limitValue / 100,
+                        strokeCap: StrokeCap.round,
+                        strokeWidth: 30,
+                        strokeAlign: 5,
+                        color: circleColor,
+                        backgroundColor: Colors.grey[300],
+                      ),
+                      Text(
+                        '${limitValue.toInt()}',
+                        style: const TextStyle(
+                          fontSize: 84,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
-                    onSubmitted: (value) {
-                      if (value.isNotEmpty) {
-                        double spending = double.tryParse(value.replaceAll(',', '.')) ?? 0;
-                        _addSpending(spending);
-                      }
-                    },
                   ),
-                  
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Enter Spending',
+                          border: OutlineInputBorder(),
+                          suffixText: "zł"
+                        ),
+                        keyboardType: TextInputType.numberWithOptions(
+                          signed: true,
+                          decimal: true,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^-?\d{0,10}[,]?\d{0,2}$'), // pozwala na liczby, przecinek, minus
+                          ),
+                        ],
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            double spending = double.tryParse(value.replaceAll(',', '.')) ?? 0;
+                            context.read<LimitBloc>().add(AddSpendingEvent(spending));
+                          }
+                        },
+                      ),
+                      
+                    ),
+                    ElevatedButton(
+                      onPressed: () => _startSTT(),
+                      child: const Icon(Icons.mic),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () => _startSTT(),
-                  child: const Icon(Icons.mic),
-                )
+                  onPressed: () => _showPopupLessZero(context),
+                  child: const Text('Open Popup Less Zero'),
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: () => _showPopupUnderLimit(context),
+                  child: const Text('Open Popup Under Limit'),
+                ),
               ],
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => _showPopupLessZero(context),
-              child: const Text('Open Popup Less Zero'),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => _showPopupUnderLimit(context),
-              child: const Text('Open Popup Under Limit'),
-            ),
-          ],
-        ),
+            );
+          }
+        )
       ),
     );
   }
