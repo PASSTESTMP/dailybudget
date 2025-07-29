@@ -139,7 +139,7 @@ class OverviewPage extends StatelessWidget {
                   
                 ),
                 ElevatedButton(
-                  onPressed: () => _addSpending(0),
+                  onPressed: () => _startSTT(),
                   child: const Icon(Icons.mic),
                 )
               ],
