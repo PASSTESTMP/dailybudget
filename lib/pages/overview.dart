@@ -1,5 +1,6 @@
 import 'package:dailybudget/pages/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OverviewPage extends StatelessWidget {
   const OverviewPage({Key? key}) : super(key: key);
@@ -11,20 +12,54 @@ class OverviewPage extends StatelessWidget {
     );
   }
 
-  void _showPopup(BuildContext context) {
+  void _showPopupLessZero(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Popup Window'),
-        content: const Text('This is a popup window.'),
+        title: const Text('Spendings are less than zero'),
+        content: const Text('Update limits after income?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('No'),
           ),
         ],
       ),
     );
+  }
+
+  void _showPopupUnderLimit(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Spending are more than limit'),
+        content: const Text('Update limit or borrow from next days?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Update'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Borrow'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _startSTT() {
+
+  }
+
+  void _addSpending(double spending) {
+    // This function should handle the logic to add spending
+    // and update the budget and limits accordingly.
+    // For now, it's just a placeholder.
   }
 
   @override
@@ -51,31 +86,73 @@ class OverviewPage extends StatelessWidget {
           children: [
             // Limit Indicator
             SizedBox(
-              width: 120,
-              height: 120,
+              width: 300,
+              height: 300,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   CircularProgressIndicator(
                     value: limitValue / 100,
-                    strokeWidth: 12,
+                    strokeCap: StrokeCap.round,
+                    strokeWidth: 30,
+                    strokeAlign: 5,
                     color: circleColor,
                     backgroundColor: Colors.grey[300],
                   ),
                   Text(
                     '${limitValue.toInt()}',
                     style: const TextStyle(
-                      fontSize: 32,
+                      fontSize: 84,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Enter Spending',
+                      border: OutlineInputBorder(),
+                      suffixText: "zł"
+                    ),
+                    keyboardType: TextInputType.numberWithOptions(
+                      signed: true,
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^-?\d{0,10}[,]?\d{0,2}$'), // pozwala na liczby, przecinek, minus
+                      ),
+                    ],
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        double spending = double.tryParse(value.replaceAll(',', '.')) ?? 0;
+                        _addSpending(spending);
+                      }
+                    },
+                  ),
+                  
+                ),
+                ElevatedButton(
+                  onPressed: () => _addSpending(0),
+                  child: const Icon(Icons.mic),
+                )
+              ],
+            ),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () => _showPopup(context),
-              child: const Text('Open Popup'),
+              onPressed: () => _showPopupLessZero(context),
+              child: const Text('Open Popup Less Zero'),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => _showPopupUnderLimit(context),
+              child: const Text('Open Popup Under Limit'),
             ),
           ],
         ),

@@ -16,6 +16,10 @@ Future<void> main() async {
 
   final limitInstance = LimitCalc();
 
+  // limitInstance.loadData(dataModel);
+
+  
+
 
   runApp(
     MyApp(),

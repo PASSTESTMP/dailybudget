@@ -101,3 +101,31 @@ All texts should be depends from language select in settings
 2. STT
 3. Firebase
 4. Many laguages
+
+
+
+
+UI:
+1. Main overview page:
+    1.1. __actualLimitState__ indicator
+    1.2. Input field:
+        1.2.1. Input text
+        1.2.2. Input STT
+        1.2.3. Send __output_event_0__ with __spending__ vlaue
+2. Popup after __input_event_0__:
+    2.1. send __output_vlaue_1__
+    2.2. send __output_vlaue_2__
+3. Popup after __input_event_1__:
+    3.1. send __output_vlaue_1__
+    3.2. send __output_vlaue_3__
+
+
+BLOC:
+1. set state __actualLimitState__
+2. add __spending__
+3. read parameters:
+    3.1.
+
+REPOSITORY:
+1. Parameters
+2. Actual data
