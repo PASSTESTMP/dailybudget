@@ -16,10 +16,25 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       emit(InitialState(dataModel: dataModel));
     });
 
+    on<UpdateDataEvent>((event, emit) async {
+      dataModel.actualLimit = event.newData.actualLimit;
+      dataModel.budget = event.newData.budget;
+      dataModel.maxLimit = event.newData.maxLimit;
+      dataModel.payday = event.newData.payday;
+      dataModel.borrow = event.newData.borrow;
+      dataModel.limit = event.newData.limit;
+      dataModel.lastUpdate = event.newData.lastUpdate;
+
+      await dataModel.saveToPreferences(await SharedPreferences.getInstance());
+
+      emit(InitialState(dataModel: dataModel));
+    });
+
     on<AddSpendingEvent>((event, emit) {
       dataModel.actualLimit -= event.spending;
       dataModel.budget -= event.spending;
       emit(SpendingAddedState(dataModel.actualLimit));
+      UpdateDataEvent(dataModel);
     });
 
     on<UpdateLimitEvent>((event, emit) {
@@ -33,12 +48,15 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       dataModel.actualLimit = dataModel.limit;
 
       emit(SpendingAddedState(dataModel.actualLimit));
+      UpdateDataEvent(dataModel);
     });
 
     on<BorrowEvent>((event, emit) {
       dataModel.budget -= event.spending;
       dataModel.borrow += event.difference;
-      emit(SpendingAddedState(0.0));
+      dataModel.actualLimit = 0;
+      emit(SpendingAddedState(dataModel.actualLimit));
+      UpdateDataEvent(dataModel);
     });
   }
 }
