@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OverviewPage extends StatelessWidget {
-  const OverviewPage({Key? key}) : super(key: key);
+  const OverviewPage({super.key});
 
   void _openSettings(BuildContext context) {
     Navigator.push(
@@ -16,19 +16,25 @@ class OverviewPage extends StatelessWidget {
     );
   }
 
-  void _showPopupLessZero(BuildContext context) {
+  void _showPopupLessZero(BuildContext parentContext, double spending) {
     showDialog(
-      context: context,
+      context: parentContext,
       builder: (context) => AlertDialog(
         title: const Text('Spendings are less than zero'),
         content: const Text('Update limits after income?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending)),
+              Navigator.pop(context)
+              },
             child: const Text('Yes'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              parentContext.read<LimitBloc>().add(AddSpendingEvent(spending)),
+              Navigator.pop(context)
+              },
             child: const Text('No'),
           ),
         ],
@@ -36,19 +42,25 @@ class OverviewPage extends StatelessWidget {
     );
   }
 
-  void _showPopupUnderLimit(BuildContext context) {
+  void _showPopupUnderLimit(BuildContext parentContext, double spending, double difference) {
     showDialog(
-      context: context,
+      context: parentContext,
       builder: (context) => AlertDialog(
         title: const Text('Spending are more than limit'),
         content: const Text('Update limit or borrow from next days?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending)),
+              Navigator.pop(context)
+              },
             child: const Text('Update'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              parentContext.read<LimitBloc>().add(BorrowEvent(difference)),
+              Navigator.pop(context)
+              },
             child: const Text('Borrow'),
           ),
         ],
@@ -59,12 +71,14 @@ class OverviewPage extends StatelessWidget {
   void _startSTT() {
 
   }
+
+
   
   @override
   Widget build(BuildContext context) {
     // Example limit value and color
     double limitValue = 75; // out of 100
-    Color circleColor = limitValue < 50
+    Color circleColor = limitValue > 80
         ? Colors.green
         : (limitValue < 80 ? Colors.orange : Colors.red);
 
@@ -95,7 +109,7 @@ class OverviewPage extends StatelessWidget {
                       CircularProgressIndicator(
                         value: limitValue / 100,
                         strokeCap: StrokeCap.round,
-                        strokeWidth: 30,
+                        strokeWidth: 40,
                         strokeAlign: 5,
                         color: circleColor,
                         backgroundColor: Colors.grey[300],
@@ -109,6 +123,9 @@ class OverviewPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  height: 100,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +150,14 @@ class OverviewPage extends StatelessWidget {
                         onSubmitted: (value) {
                           if (value.isNotEmpty) {
                             double spending = double.tryParse(value.replaceAll(',', '.')) ?? 0;
-                            context.read<LimitBloc>().add(AddSpendingEvent(spending));
+                            if (spending < 0) {
+                              _showPopupLessZero(context, spending);
+                            } else if (spending > limitValue) {
+                              double difference = spending - limitValue;
+                              _showPopupUnderLimit(context, spending, difference);
+                            } else {
+                              context.read<LimitBloc>().add(AddSpendingEvent(spending));
+                            }
                           }
                         },
                       ),
@@ -144,16 +168,6 @@ class OverviewPage extends StatelessWidget {
                       child: const Icon(Icons.mic),
                     )
                   ],
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () => _showPopupLessZero(context),
-                  child: const Text('Open Popup Less Zero'),
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () => _showPopupUnderLimit(context),
-                  child: const Text('Open Popup Under Limit'),
                 ),
               ],
             );

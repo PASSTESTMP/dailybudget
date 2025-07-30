@@ -1,6 +1,5 @@
 import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
-import 'package:dailybudget/features/limit_calc.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,14 +13,7 @@ Future<void> main() async {
 
   final dataModel = DataModel();
 
-  dataModel.getFromPreferences(prefs);
-
-  final limitInstance = LimitCalc();
-
-  // limitInstance.loadData(dataModel);
-
-  
-
+  dataModel.getFromPreferences(prefs);  
 
   runApp(
     MyApp(),
@@ -29,6 +21,9 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
