@@ -58,7 +58,7 @@ class OverviewPage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => {
-              parentContext.read<LimitBloc>().add(BorrowEvent(difference)),
+              parentContext.read<LimitBloc>().add(BorrowEvent(difference, spending)),
               Navigator.pop(context)
               },
             child: const Text('Borrow'),

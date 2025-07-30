@@ -1,5 +1,6 @@
 import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
+import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,11 +10,11 @@ Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
 
-  final prefs = await SharedPreferences.getInstance();
+  // final prefs = await SharedPreferences.getInstance();
 
-  final dataModel = DataModel();
+  // final dataModel = DataModel();
 
-  dataModel.getFromPreferences(prefs);  
+  // dataModel.getFromPreferences(prefs);  
 
   runApp(
     MyApp(),
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-        create: (_) => LimitBloc(),
+        create: (_) => LimitBloc()..add(LoadDataEvent()),
         child: const OverviewPage(),
       ),
     );

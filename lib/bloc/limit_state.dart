@@ -1,17 +1,22 @@
+import 'package:dailybudget/Model/data_model.dart';
+
 abstract class LimitState {
-  double actualLimit = 59; // Placeholder for actualLimit, should be overridden in subclasses
+  double actualLimit = 0.0;
 }
 
 class InitialState extends LimitState {
-  @override
-  double get actualLimit => 0; // Initial state has no limit
+  final DataModel dataModel;
+  InitialState({required this.dataModel});
+
+  InitialState copyWith({DataModel? dataModel}) {
+    return InitialState(dataModel: dataModel ?? this.dataModel);
+  }
 }
 
 class SpendingAddedState extends LimitState {
-  final double spending;
+  final double newlLimit;
 
-  SpendingAddedState(this.spending) {
-    // Update actualLimit based on spending
-    actualLimit -= spending;
+  SpendingAddedState(this.newlLimit){
+    actualLimit = newlLimit;
   }
 }

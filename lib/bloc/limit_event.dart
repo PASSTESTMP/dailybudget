@@ -1,4 +1,14 @@
+import 'package:dailybudget/Model/data_model.dart';
+
 abstract class LimitEvent {}
+
+class LoadDataEvent extends LimitEvent {}
+
+class UpdateDataEvent extends LimitEvent {
+  final DataModel newData;
+
+  UpdateDataEvent(this.newData);
+}
 
 class UpdateLimitEvent extends LimitEvent {
   final double spending;
@@ -13,7 +23,8 @@ class AddSpendingEvent extends LimitEvent {
 }
 
 class BorrowEvent extends LimitEvent {
+  final double spending;
   final double difference;
 
-  BorrowEvent(this.difference);
+  BorrowEvent(this.difference, this.spending);
 }
