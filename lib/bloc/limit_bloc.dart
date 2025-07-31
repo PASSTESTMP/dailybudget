@@ -5,15 +5,17 @@ import 'limit_event.dart';
 import 'limit_state.dart';
 
 class LimitBloc extends Bloc<LimitEvent, LimitState> {
-  LimitBloc() : super(InitialState(dataModel:  DataModel())) {
+  LimitBloc() : super(InitialState(newDataModel:  DataModel())) {
     final dataModel = DataModel();
+
+    
 
     on<LoadDataEvent>((event, emit) async {
 
       final prefs = await SharedPreferences.getInstance();
       dataModel.getFromPreferences(prefs);
 
-      emit(InitialState(dataModel: dataModel));
+      emit(InitialState(newDataModel: dataModel));
     });
 
     on<UpdateDataEvent>((event, emit) async {
@@ -27,7 +29,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
       await dataModel.saveToPreferences(await SharedPreferences.getInstance());
 
-      emit(InitialState(dataModel: dataModel));
+      emit(InitialState(newDataModel: dataModel));
     });
 
     on<AddSpendingEvent>((event, emit) {
@@ -57,6 +59,36 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       dataModel.actualLimit = 0;
       emit(SpendingAddedState(dataModel.actualLimit, dataModel.limit));
       UpdateDataEvent(dataModel);
+    });
+
+    on<UpdateBudgetEvent>((event, emit) {
+      dataModel.budget = double.tryParse(event.budget) ?? 0;
+      emit(InitialState(newDataModel: dataModel));
+    });
+
+    on<UpdateMaxLimitEvent>((event, emit) {
+      dataModel.maxLimit = double.tryParse(event.maxLimit) ?? 0;
+      emit(InitialState(newDataModel: dataModel));
+    });
+
+    on<UpdatePaydayEvent>((event, emit) {
+      dataModel.payday = int.tryParse(event.payday) ?? 10;
+      emit(InitialState(newDataModel: dataModel));
+    });
+
+    on<UpdateBorrowEvent>((event, emit) {
+      dataModel.borrow = double.tryParse(event.borrow) ?? 0;
+      emit(InitialState(newDataModel: dataModel));
+    });
+
+    on<UpdateLimitValueEvent>((event, emit) {
+      dataModel.limit = double.tryParse(event.limit) ?? 0;
+      emit(InitialState(newDataModel: dataModel));
+    });
+
+    on<SaveSettingsEvent>((event, emit) async {
+      await event.dataModel.saveToPreferences(await SharedPreferences.getInstance());
+      emit(InitialState(newDataModel: event.dataModel));
     });
   }
 }

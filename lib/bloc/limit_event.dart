@@ -28,3 +28,39 @@ class BorrowEvent extends LimitEvent {
 
   BorrowEvent(this.difference, this.spending);
 }
+
+class UpdateBudgetEvent extends LimitEvent {
+  final String budget;
+
+  UpdateBudgetEvent(this.budget);
+}
+
+class UpdateMaxLimitEvent extends LimitEvent {
+  final String maxLimit;
+
+  UpdateMaxLimitEvent(this.maxLimit);
+}
+
+class UpdatePaydayEvent extends LimitEvent {
+  final String payday;
+
+  UpdatePaydayEvent(this.payday);
+}
+
+class UpdateBorrowEvent extends LimitEvent {
+  final String borrow;
+
+  UpdateBorrowEvent(this.borrow);
+}
+
+class UpdateLimitValueEvent extends LimitEvent {
+  final String limit;
+
+  UpdateLimitValueEvent(this.limit);
+}
+
+class SaveSettingsEvent extends LimitEvent {
+  final DataModel dataModel;
+
+  SaveSettingsEvent(this.dataModel);
+}

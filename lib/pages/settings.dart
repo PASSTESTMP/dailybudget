@@ -1,36 +1,134 @@
-
+import 'package:dailybudget/bloc/limit_bloc.dart';
+import 'package:dailybudget/bloc/limit_event.dart';
+import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Settings Page',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Search Settings',
+    return BlocProvider(
+      create: (_) => LimitBloc(),
+      child: const SettingsView(),
+    );
+  }
+}
+
+class SettingsView extends StatefulWidget {
+  const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _budgetController = TextEditingController();
+  final _maxLimitController = TextEditingController();
+  final _paydayController = TextEditingController();
+  final _borrowController = TextEditingController();
+  final _limitController = TextEditingController();
+
+  @override
+  void dispose() {
+    _budgetController.dispose();
+    _maxLimitController.dispose();
+    _paydayController.dispose();
+    _borrowController.dispose();
+    _limitController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LimitBloc, LimitState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_budgetController.text != state.dataModel.budget.toString()) {
+            _budgetController.text = state.dataModel.budget.toString();
+          }
+          if (_maxLimitController.text != state.dataModel.maxLimit.toString()) {
+            _maxLimitController.text = state.dataModel.maxLimit.toString();
+          }
+          if (_paydayController.text != state.dataModel.payday.toString()) {
+            _paydayController.text = state.dataModel.payday.toString();
+          }
+          if (_borrowController.text != state.dataModel.borrow.toString()) {
+            _borrowController.text = state.dataModel.borrow.toString();
+          }
+          if (_limitController.text != state.limit.toString()) {
+            _limitController.text = state.limit.toString();
+          }
+        });
+        
+        return Scaffold(
+          appBar: AppBar(title: const Text('Settings')),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  _buildNumberField(context, 'Budget', _budgetController,
+                      (value) => context.read<LimitBloc>().add(UpdateBudgetEvent(value))),
+                  _buildNumberField(context, 'Max limit', _maxLimitController,
+                      (value) => context.read<LimitBloc>().add(UpdateMaxLimitEvent(value))),
+                  _buildNumberField(context, 'Pay day of month', _paydayController,
+                      (value) => context.read<LimitBloc>().add(UpdatePaydayEvent(value)),
+                      isInt: true),
+                  _buildNumberField(context, 'Borrows', _borrowController,
+                      (value) => context.read<LimitBloc>().add(UpdateBorrowEvent(value))),
+                  _buildNumberField(context, 'Limit', _limitController,
+                      (value) => context.read<LimitBloc>().add(UpdateLimitValueEvent(value))),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<LimitBloc>().add(SaveSettingsEvent(state.dataModel));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Settings saved')),
+                        );
+                      }
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
               ),
             ),
-            Text(
-              'Here you can adjust your settings.',
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNumberField(BuildContext context, String label,
+      TextEditingController controller, void Function(String) onChanged,
+      {bool isInt = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
         ),
+        onFieldSubmitted: onChanged,
+        validator: (value) {
+          if (value == null || value.isEmpty) return 'Enter value';
+          return isInt
+              ? (int.tryParse(value) == null ? 'Enter integer' : null)
+              : (double.tryParse(value) == null ? 'Enter number' : null);
+        },
       ),
     );
   }
