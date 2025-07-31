@@ -33,7 +33,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
     on<AddSpendingEvent>((event, emit) {
       dataModel.actualLimit -= event.spending;
       dataModel.budget -= event.spending;
-      emit(SpendingAddedState(dataModel.actualLimit));
+      emit(SpendingAddedState(dataModel.actualLimit, dataModel.limit));
       UpdateDataEvent(dataModel);
     });
 
@@ -47,7 +47,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       dataModel.limit = (dataModel.budget / daysToPayday).clamp(0, dataModel.maxLimit);
       dataModel.actualLimit = dataModel.limit;
 
-      emit(SpendingAddedState(dataModel.actualLimit));
+      emit(SpendingAddedState(dataModel.actualLimit, dataModel.limit));
       UpdateDataEvent(dataModel);
     });
 
@@ -55,7 +55,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       dataModel.budget -= event.spending;
       dataModel.borrow += event.difference;
       dataModel.actualLimit = 0;
-      emit(SpendingAddedState(dataModel.actualLimit));
+      emit(SpendingAddedState(dataModel.actualLimit, dataModel.limit));
       UpdateDataEvent(dataModel);
     });
   }

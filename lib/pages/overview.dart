@@ -6,8 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class OverviewPage extends StatelessWidget {
+class OverviewPage extends StatefulWidget {
   const OverviewPage({super.key});
+
+  @override
+  State<OverviewPage> createState() => _OverviewPageState();
+}
+
+class _OverviewPageState extends State<OverviewPage> {
+  final TextEditingController _controller = TextEditingController();
 
   void _openSettings(BuildContext context) {
     Navigator.push(
@@ -24,17 +31,17 @@ class OverviewPage extends StatelessWidget {
         content: const Text('Update limits after income?'),
         actions: [
           TextButton(
-            onPressed: () => {
-              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending)),
-              Navigator.pop(context)
-              },
+            onPressed: () {
+              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending));
+              Navigator.pop(context);
+            },
             child: const Text('Yes'),
           ),
           TextButton(
-            onPressed: () => {
-              parentContext.read<LimitBloc>().add(AddSpendingEvent(spending)),
-              Navigator.pop(context)
-              },
+            onPressed: () {
+              parentContext.read<LimitBloc>().add(AddSpendingEvent(spending));
+              Navigator.pop(context);
+            },
             child: const Text('No'),
           ),
         ],
@@ -50,17 +57,17 @@ class OverviewPage extends StatelessWidget {
         content: const Text('Update limit or borrow from next days?'),
         actions: [
           TextButton(
-            onPressed: () => {
-              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending)),
-              Navigator.pop(context)
-              },
+            onPressed: () {
+              parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending));
+              Navigator.pop(context);
+            },
             child: const Text('Update'),
           ),
           TextButton(
-            onPressed: () => {
-              parentContext.read<LimitBloc>().add(BorrowEvent(difference, spending)),
-              Navigator.pop(context)
-              },
+            onPressed: () {
+              parentContext.read<LimitBloc>().add(BorrowEvent(difference, spending));
+              Navigator.pop(context);
+            },
             child: const Text('Borrow'),
           ),
         ],
@@ -69,18 +76,20 @@ class OverviewPage extends StatelessWidget {
   }
 
   void _startSTT() {
-
+    // Implement speech-to-text functionality here
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
-  
   @override
   Widget build(BuildContext context) {
-    // Example limit value and color
-    double limitValue = 75; // out of 100
-    Color circleColor = limitValue > 80
-        ? Colors.green
-        : (limitValue < 80 ? Colors.orange : Colors.red);
+    double limitValue = 0;
+    Color circleColor = Colors.green;
+    double limitPercentage = 0.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +104,15 @@ class OverviewPage extends StatelessWidget {
       body: Center(
         child: BlocBuilder<LimitBloc, LimitState>(
           builder: (context, state) {
-            limitValue = state.actualLimit; // Assuming state has actualLimit
+            limitValue = state.actualLimit;
+            if (limitValue != 0 && state.limit != 0) {
+              limitPercentage = (limitValue / state.limit) * 100;
+            } else {
+              limitPercentage = 0;
+            }
+            circleColor = limitPercentage > 70
+                ? Colors.green
+                : (limitValue > 30 ? Colors.orange : Colors.red);
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -107,24 +124,36 @@ class OverviewPage extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       CircularProgressIndicator(
-                        value: limitValue / 100,
+                        value: limitPercentage / 100,
                         strokeCap: StrokeCap.round,
                         strokeWidth: 40,
                         strokeAlign: 5,
                         color: circleColor,
                         backgroundColor: Colors.grey[300],
                       ),
-                      Text(
-                        '${limitValue.toInt()}',
-                        style: const TextStyle(
-                          fontSize: 84,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            limitValue.toStringAsFixed(2),
+                            style: const TextStyle(
+                              fontSize: 62,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'zł',
+                            style: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 100,
                 ),
                 Row(
@@ -133,6 +162,7 @@ class OverviewPage extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.5,
                       child: TextField(
+                        controller: _controller,
                         decoration: const InputDecoration(
                           labelText: 'Enter Spending',
                           border: OutlineInputBorder(),
@@ -144,7 +174,7 @@ class OverviewPage extends StatelessWidget {
                         ),
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
-                            RegExp(r'^-?\d{0,10}[,]?\d{0,2}$'), // pozwala na liczby, przecinek, minus
+                            RegExp(r'^-?\d{0,10}[,]?\d{0,2}$'),
                           ),
                         ],
                         onSubmitted: (value) {
@@ -159,9 +189,9 @@ class OverviewPage extends StatelessWidget {
                               context.read<LimitBloc>().add(AddSpendingEvent(spending));
                             }
                           }
-                        },
-                      ),
-                      
+                          _controller.clear();
+                        }
+                      )
                     ),
                     ElevatedButton(
                       onPressed: () => _startSTT(),

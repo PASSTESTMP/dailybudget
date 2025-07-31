@@ -1,9 +1,7 @@
-import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> main() async {
