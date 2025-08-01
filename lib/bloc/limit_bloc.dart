@@ -110,9 +110,13 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       if (newData.lastUpdate != null) {
         int daysAfterCheck = newData.lastUpdate!.difference(newData.actualDate).inDays;
         newData.lastUpdate = newData.actualDate;
-        newData.actualLimit += newData.limit * daysAfterCheck;
-      } else {
-        newData.lastUpdate = newData.actualDate;
+        if (daysAfterCheck > 0) {
+          newData.actualLimit += newData.limit * daysAfterCheck;
+          double difference = newData.actualLimit - newData.borrow;
+          newData.actualLimit = difference >= 0 ? difference : 0;
+          
+          newData.borrow = difference < 0 ? -difference : 0;
+        }
       }
 
       emit(LimitState(newData));
