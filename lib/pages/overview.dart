@@ -104,9 +104,9 @@ class _OverviewPageState extends State<OverviewPage> {
       body: Center(
         child: BlocBuilder<LimitBloc, LimitState>(
           builder: (context, state) {
-            limitValue = state.actualLimit;
-            if (limitValue != 0 && state.limit != 0) {
-              limitPercentage = (limitValue / state.limit) * 100;
+            limitValue = state.dataModel.actualLimit;
+            if (limitValue != 0 && state.dataModel.limit != 0) {
+              limitPercentage = (limitValue / state.dataModel.limit) * 100;
             } else {
               limitPercentage = 0;
             }
@@ -126,7 +126,7 @@ class _OverviewPageState extends State<OverviewPage> {
                       CircularProgressIndicator(
                         value: limitPercentage / 100,
                         strokeCap: StrokeCap.round,
-                        strokeWidth: 40,
+                        strokeWidth: 50,
                         strokeAlign: 5,
                         color: circleColor,
                         backgroundColor: Colors.grey[300],
@@ -154,7 +154,7 @@ class _OverviewPageState extends State<OverviewPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 50,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

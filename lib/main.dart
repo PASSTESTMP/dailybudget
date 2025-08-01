@@ -1,5 +1,7 @@
+import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
+import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider(
-        create: (_) => LimitBloc()..add(LoadDataEvent()),
+        create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
         child: const OverviewPage(),
       ),
     );

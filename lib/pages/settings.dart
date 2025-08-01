@@ -1,6 +1,8 @@
+import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
+import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,7 +12,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LimitBloc(),
+      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
       child: const SettingsView(),
     );
   }
@@ -46,11 +48,6 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     return BlocBuilder<LimitBloc, LimitState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_budgetController.text != state.dataModel.budget.toString()) {
@@ -65,8 +62,8 @@ class _SettingsViewState extends State<SettingsView> {
           if (_borrowController.text != state.dataModel.borrow.toString()) {
             _borrowController.text = state.dataModel.borrow.toString();
           }
-          if (_limitController.text != state.limit.toString()) {
-            _limitController.text = state.limit.toString();
+          if (_limitController.text != state.dataModel.limit.toString()) {
+            _limitController.text = state.dataModel.limit.toString();
           }
         });
         
