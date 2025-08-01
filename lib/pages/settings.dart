@@ -4,6 +4,7 @@ import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -50,20 +51,20 @@ class _SettingsViewState extends State<SettingsView> {
       builder: (context, state) {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_budgetController.text != state.dataModel.budget.toString()) {
-            _budgetController.text = state.dataModel.budget.toString();
+          if (_budgetController.text != state.dataModel.budget.toStringAsFixed(2)) {
+            _budgetController.text = state.dataModel.budget.toStringAsFixed(2);
           }
-          if (_maxLimitController.text != state.dataModel.maxLimit.toString()) {
-            _maxLimitController.text = state.dataModel.maxLimit.toString();
+          if (_maxLimitController.text != state.dataModel.maxLimit.toStringAsFixed(2)) {
+            _maxLimitController.text = state.dataModel.maxLimit.toStringAsFixed(2);
           }
           if (_paydayController.text != state.dataModel.payday.toString()) {
             _paydayController.text = state.dataModel.payday.toString();
           }
-          if (_borrowController.text != state.dataModel.borrow.toString()) {
-            _borrowController.text = state.dataModel.borrow.toString();
+          if (_borrowController.text != state.dataModel.borrow.toStringAsFixed(2)) {
+            _borrowController.text = state.dataModel.borrow.toStringAsFixed(2);
           }
-          if (_limitController.text != state.dataModel.limit.toString()) {
-            _limitController.text = state.dataModel.limit.toString();
+          if (_limitController.text != state.dataModel.limit.toStringAsFixed(2)) {
+            _limitController.text = state.dataModel.limit.toStringAsFixed(2);
           }
         });
         
@@ -114,9 +115,16 @@ class _SettingsViewState extends State<SettingsView> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: controller,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+          signed: true
+        ),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+        ],
         decoration: InputDecoration(
           labelText: label,
+          suffix: isInt ? Text("") : Text("zł"),
           border: const OutlineInputBorder(),
         ),
         onFieldSubmitted: onChanged,
