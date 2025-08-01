@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
+import 'package:dailybudget/features/stt_service.dart';
 import 'package:dailybudget/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -78,7 +79,18 @@ class _OverviewPageState extends State<OverviewPage> {
   }
 
   void _startSTT() {
-    // Implement speech-to-text functionality here
+    SttService sttService = SttService();
+    sttService.initialize();
+    if (!sttService.isAvailable){};
+    sttService.startListening(
+      onResult: (result) {
+        if (result.isNotEmpty) {
+          double spending = double.tryParse(result.replaceAll(',', '.')) ?? 0;
+          print(spending.toString());
+        }
+        
+      }
+    );
   }
 
   @override
