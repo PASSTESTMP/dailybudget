@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
@@ -194,7 +196,15 @@ class _OverviewPageState extends State<OverviewPage> {
                       )
                     ),
                     ElevatedButton(
-                      onPressed: () => _startSTT(),
+                      onPressed: () {
+                        if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Speech-to-text is not supported on this platform')),
+                          );
+                        } else {
+                          _startSTT();
+                        }
+                      },
                       child: const Icon(Icons.mic),
                     )
                   ],
