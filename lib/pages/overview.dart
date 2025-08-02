@@ -127,6 +127,12 @@ class _OverviewPageState extends State<OverviewPage> {
             circleColor = limitPercentage > 70
                 ? Colors.green
                 : (limitValue > 30 ? Colors.orange : Colors.red);
+
+            if (state.dataModel.borrow > 0 && limitValue == 0) {
+              limitValue = -state.dataModel.borrow;
+              circleColor = Colors.red;
+              limitPercentage = 100;
+            }
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -207,17 +213,20 @@ class _OverviewPageState extends State<OverviewPage> {
                         }
                       )
                     ),
-                    ElevatedButton(
-                      onPressed: () {
+                    Listener(
+                      onPointerDown: (_) {
                         if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Speech-to-text is not supported on this platform')),
+                          const SnackBar(content: Text('Speech-to-text is not supported on this platform')),
                           );
                         } else {
                           _startSTT();
                         }
-                      },
-                      child: const Icon(Icons.mic),
+                        },
+                        child: ElevatedButton(
+                        onPressed: null, // Disable default onPressed
+                        child: const Icon(Icons.mic),
+                      ),
                     )
                   ],
                 ),

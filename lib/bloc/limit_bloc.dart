@@ -109,7 +109,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       
       if (newData.lastUpdate != null) {
         int daysAfterCheck = newData.lastUpdate!.difference(newData.actualDate).inDays;
-        newData.lastUpdate = newData.actualDate;
+        
         if (daysAfterCheck > 0) {
           newData.actualLimit += newData.limit * daysAfterCheck;
           double difference = newData.actualLimit - newData.borrow;
@@ -118,6 +118,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
           newData.borrow = difference < 0 ? -difference : 0;
         }
       }
+      newData.lastUpdate = newData.actualDate;
 
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
