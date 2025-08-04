@@ -87,11 +87,10 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       final newData = await _storageService.getFromPreferences();
 
       newData.actualDate = DateTime.now();
-      
       if (newData.lastUpdate != null) {
-        int daysAfterCheck = newData.lastUpdate!.difference(newData.actualDate).inDays;
+        int daysAfterCheck = newData.actualDate.difference(newData.lastUpdate!).inDays.abs();
         
-        if (daysAfterCheck > 0) {
+        if (daysAfterCheck != 0) {
           newData.actualLimit += newData.limit * daysAfterCheck;
         }
       }
