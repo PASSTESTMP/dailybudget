@@ -51,17 +51,6 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       await _storageService.saveToPreferences(newData);
     });
 
-    on<BorrowEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
-
-      newData.budget -= event.spending;
-      newData.borrow += event.difference;
-      newData.actualLimit = 0;
-      
-      emit(LimitState(newData));
-      await _storageService.saveToPreferences(newData);
-    });
-
     on<UpdateBudgetEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
@@ -86,14 +75,6 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       await _storageService.saveToPreferences(newData);
     });
 
-    on<UpdateBorrowEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
-
-      newData.borrow = double.tryParse(event.borrow) ?? 0;
-      emit(LimitState(newData));
-      await _storageService.saveToPreferences(newData);
-    });
-
     on<UpdateLimitValueEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
@@ -112,10 +93,6 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
         
         if (daysAfterCheck > 0) {
           newData.actualLimit += newData.limit * daysAfterCheck;
-          double difference = newData.actualLimit - newData.borrow;
-          newData.actualLimit = difference >= 0 ? difference : 0;
-          
-          newData.borrow = difference < 0 ? -difference : 0;
         }
       }
       newData.lastUpdate = newData.actualDate;
@@ -129,7 +106,6 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       newData.budget = double.tryParse(event.dataModel.budget.toString()) ?? 0;
       newData.maxLimit = double.tryParse(event.dataModel.maxLimit.toString()) ?? 100;
       newData.payday = event.dataModel.payday;
-      newData.borrow = double.tryParse(event.dataModel.borrow.toString()) ?? 0;
       newData.limit = double.tryParse(event.dataModel.limit.toString()) ?? 0;
 
       await _storageService.saveToPreferences(newData);

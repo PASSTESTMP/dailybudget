@@ -22,13 +22,6 @@ class AddSpendingEvent extends LimitEvent {
   AddSpendingEvent(this.spending);
 }
 
-class BorrowEvent extends LimitEvent {
-  final double spending;
-  final double difference;
-
-  BorrowEvent(this.difference, this.spending);
-}
-
 class UpdateBudgetEvent extends LimitEvent {
   final String budget;
 

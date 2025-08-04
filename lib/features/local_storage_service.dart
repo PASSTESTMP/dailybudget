@@ -16,7 +16,6 @@ class LocalStorageService {
     dataModel.budget = prefs.getDouble('budget') ?? 0;
     dataModel.maxLimit = prefs.getDouble('maxLimit') ?? 100;
     dataModel.payday = prefs.getInt('payday') ?? 10;
-    dataModel.borrow = prefs.getDouble('borrow') ?? 0;
     dataModel.limit = prefs.getDouble('limit') ?? 0;
     String? lastUpdateString = prefs.getString(_dataKey);
     if (lastUpdateString != null) {
@@ -31,7 +30,6 @@ class LocalStorageService {
     await prefs.setDouble('budget', newData.budget);
     await prefs.setDouble('maxLimit', newData.maxLimit);
     await prefs.setInt('payday', newData.payday);
-    await prefs.setDouble('borrow', newData.borrow);
     await prefs.setDouble('limit', newData.limit);
     if (newData.lastUpdate != null) {
       await prefs.setString(_dataKey, newData.lastUpdate!.toIso8601String());

@@ -52,7 +52,7 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  void _showPopupUnderLimit(BuildContext parentContext, double spending, double difference) {
+  void _showPopupUnderLimit(BuildContext parentContext, double spending) {
     showDialog(
       context: parentContext,
       builder: (context) => AlertDialog(
@@ -68,7 +68,7 @@ class _OverviewPageState extends State<OverviewPage> {
           ),
           TextButton(
             onPressed: () {
-              parentContext.read<LimitBloc>().add(BorrowEvent(difference, spending));
+              parentContext.read<LimitBloc>().add(AddSpendingEvent(spending));
               Navigator.pop(context);
             },
             child: const Text('Borrow'),
@@ -128,8 +128,7 @@ class _OverviewPageState extends State<OverviewPage> {
                 ? Colors.green
                 : (limitValue > 30 ? Colors.orange : Colors.red);
 
-            if (state.dataModel.borrow > 0 && limitValue == 0) {
-              limitValue = -state.dataModel.borrow;
+            if (limitValue < 0) {
               circleColor = Colors.red;
               limitPercentage = 100;
             }
@@ -203,8 +202,7 @@ class _OverviewPageState extends State<OverviewPage> {
                             if (spending < 0) {
                               _showPopupLessZero(context, spending);
                             } else if (spending > limitValue) {
-                              double difference = spending - limitValue;
-                              _showPopupUnderLimit(context, spending, difference);
+                              _showPopupUnderLimit(context, spending);
                             } else {
                               context.read<LimitBloc>().add(AddSpendingEvent(spending));
                             }

@@ -60,9 +60,6 @@ class _SettingsViewState extends State<SettingsView> {
           if (_paydayController.text != state.dataModel.payday.toString()) {
             _paydayController.text = state.dataModel.payday.toString();
           }
-          if (_borrowController.text != state.dataModel.borrow.toStringAsFixed(2)) {
-            _borrowController.text = state.dataModel.borrow.toStringAsFixed(2);
-          }
           if (_limitController.text != state.dataModel.limit.toStringAsFixed(2)) {
             _limitController.text = state.dataModel.limit.toStringAsFixed(2);
           }
@@ -83,8 +80,6 @@ class _SettingsViewState extends State<SettingsView> {
                   _buildNumberField(context, 'Pay day of month', _paydayController,
                       (value) => context.read<LimitBloc>().add(UpdatePaydayEvent(value)),
                       isInt: true),
-                  _buildNumberField(context, 'Borrows', _borrowController,
-                      (value) => context.read<LimitBloc>().add(UpdateBorrowEvent(value))),
                   _buildNumberField(context, 'Limit', _limitController,
                       (value) => context.read<LimitBloc>().add(UpdateLimitValueEvent(value))),
                   // const SizedBox(height: 20),
