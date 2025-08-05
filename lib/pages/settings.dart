@@ -88,7 +88,7 @@ class _SettingsViewState extends State<SettingsView> {
                       if (_formKey.currentState!.validate()) {
                         context.read<LimitBloc>().add(UpdateLimitEvent(0.0));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Update limit')),
+                          const SnackBar(content: Text('Limit updated')),
                         );
                       }
                     },
