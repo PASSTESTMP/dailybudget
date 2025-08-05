@@ -15,6 +15,14 @@ void main() {
   late MockLocalStorageService mockStorageService;
   late DataModel initialData;
 
+  double testLimit = 100.0;
+  double testActuallimit = 100.0;
+  double testSpending = 50.0;
+  double testBudget = 200.0;
+  int testDaysAfterUpdate = 1;
+  int testPayday = 10;
+  double testMaxLimit = 100.0;
+
   setUpAll(() {
     registerFallbackValue(FakeDataModel());
   });
@@ -23,12 +31,12 @@ void main() {
     mockStorageService = MockLocalStorageService();
 
     initialData = DataModel()
-      ..actualLimit = 100
-      ..budget = 200
-      ..maxLimit = 100
+      ..actualLimit = testActuallimit
+      ..budget = testBudget
+      ..maxLimit = testMaxLimit
       ..actualDate = DateTime(2025, 1, 1)
-      ..payday = 10
-      ..limit = 100
+      ..payday = testPayday
+      ..limit = testLimit
       ..lastUpdate = null;
   });
 
@@ -44,16 +52,16 @@ void main() {
 
         return LimitBloc(mockStorageService);
       },
-      act: (bloc) => bloc.add(AddSpendingEvent(50)),
+      act: (bloc) => bloc.add(AddSpendingEvent(testSpending)),
       expect: () => [
         isA<LimitState>().having(
           (s) => s.dataModel.actualLimit,
           'actualLimit',
-          50,
+          testActuallimit - testSpending,
         ).having(
           (s) => s.dataModel.budget,
           'budget',
-          150,
+          testBudget - testSpending,
         ),
       ],
       verify: (_) {
@@ -66,7 +74,7 @@ void main() {
       build: () {
         when(() => mockStorageService.getFromPreferences())
             .thenAnswer((_) async => initialData
-            ..lastUpdate = DateTime.now().add(Duration(days: -1))
+            ..lastUpdate = DateTime.now().add(Duration(days: -testDaysAfterUpdate))
             );
 
         when(() => mockStorageService.saveToPreferences(any()))
@@ -83,7 +91,39 @@ void main() {
         ).having(
           (s) => s.dataModel.actualLimit,
           'actualLimit',
-          200,
+          testActuallimit + testDaysAfterUpdate * initialData.limit,
+        )
+      ],
+      verify: (_) {
+        verify(() => mockStorageService.getFromPreferences()).called(1);
+        verify(() => mockStorageService.saveToPreferences(any())).called(1);
+      },
+    );
+
+    blocTest<LimitBloc, LimitState>(
+      'emits updated LimitState when date is changed long time',
+      build: () {
+        testDaysAfterUpdate = 20;
+        when(() => mockStorageService.getFromPreferences())
+            .thenAnswer((_) async => initialData
+            ..lastUpdate = DateTime.now().add(Duration(days: -testDaysAfterUpdate))
+            );
+
+        when(() => mockStorageService.saveToPreferences(any()))
+            .thenAnswer((_) async {});
+
+        return LimitBloc(mockStorageService);
+      },
+      act: (bloc) => bloc.add(LoadDataEvent()),
+      expect: () => [
+        isA<LimitState>().having(
+          (s) => s.dataModel.lastUpdate!.day,
+          'lastUpdate',
+          DateTime.now().day,
+        ).having(
+          (s) => s.dataModel.actualLimit,
+          'actualLimit',
+          testActuallimit + testDaysAfterUpdate * initialData.limit,
         )
       ],
       verify: (_) {
