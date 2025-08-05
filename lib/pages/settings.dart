@@ -82,18 +82,18 @@ class _SettingsViewState extends State<SettingsView> {
                       isInt: true),
                   _buildNumberField(context, 'Limit', _limitController,
                       (value) => context.read<LimitBloc>().add(UpdateLimitValueEvent(value))),
-                  // const SizedBox(height: 20),
-                  // ElevatedButton(
-                  //   onPressed: () async {
-                  //     if (_formKey.currentState!.validate()) {
-                  //       context.read<LimitBloc>().add(SaveSettingsEvent(state.dataModel));
-                  //       ScaffoldMessenger.of(context).showSnackBar(
-                  //         const SnackBar(content: Text('Settings saved')),
-                  //       );
-                  //     }
-                  //   },
-                  //   child: const Text('Save'),
-                  // ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<LimitBloc>().add(UpdateLimitEvent(0.0));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Update limit')),
+                        );
+                      }
+                    },
+                    child: const Text('Update limit'),
+                  ),
                 ],
               ),
             ),

@@ -81,7 +81,7 @@ class _OverviewPageState extends State<OverviewPage> {
   void _startSTT() {
     SttService sttService = SttService();
     sttService.initialize();
-    if (!sttService.isAvailable){};
+    if (!sttService.isAvailable){}
     sttService.startListening(
       onResult: (result) {
         if (result.isNotEmpty) {

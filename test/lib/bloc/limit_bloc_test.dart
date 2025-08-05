@@ -28,7 +28,7 @@ void main() {
       ..maxLimit = 100
       ..actualDate = DateTime(2025, 1, 1)
       ..payday = 10
-      ..limit = 0
+      ..limit = 100
       ..lastUpdate = null;
   });
 
@@ -62,27 +62,29 @@ void main() {
       },
     );
     blocTest<LimitBloc, LimitState>(
-      'emits updated LimitState when AddSpendingEvent is added',
+      'emits updated LimitState when date is changed',
       build: () {
         when(() => mockStorageService.getFromPreferences())
-            .thenAnswer((_) async => initialData);
+            .thenAnswer((_) async => initialData
+            ..lastUpdate = DateTime.now().add(Duration(days: -1))
+            );
 
         when(() => mockStorageService.saveToPreferences(any()))
             .thenAnswer((_) async {});
 
         return LimitBloc(mockStorageService);
       },
-      act: (bloc) => bloc.add(AddSpendingEvent(200)),
+      act: (bloc) => bloc.add(LoadDataEvent()),
       expect: () => [
         isA<LimitState>().having(
+          (s) => s.dataModel.lastUpdate!.day,
+          'lastUpdate',
+          DateTime.now().day,
+        ).having(
           (s) => s.dataModel.actualLimit,
           'actualLimit',
-          -100,
-        ).having(
-          (s) => s.dataModel.budget,
-          'budget',
-          0,
-        ),
+          200,
+        )
       ],
       verify: (_) {
         verify(() => mockStorageService.getFromPreferences()).called(1);
