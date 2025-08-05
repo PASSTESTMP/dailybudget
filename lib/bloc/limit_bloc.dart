@@ -87,13 +87,6 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       final newData = await _storageService.getFromPreferences();
 
       newData.actualDate = DateTime.now();
-      // If last update date is available
-      // check how many days have passed for up today
-      // if more than 0 days add limit for each day plus 
-
-
-
-
 
       if (newData.lastUpdate != null) {
         bool isNewDay = newData.actualDate.day != newData.lastUpdate!.day ||
@@ -101,7 +94,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
             newData.actualDate.year != newData.lastUpdate!.year;
 
         if (isNewDay) {
-          int daysAfterCheck = (newData.actualDate.difference(newData.lastUpdate!).inHours.abs()/24).ceil();
+          int daysAfterCheck = (newData.actualDate.difference(newData.lastUpdate!).inSeconds.abs()/(24*60*60)).ceil();
           newData.actualLimit += newData.limit * daysAfterCheck;
         }
       }

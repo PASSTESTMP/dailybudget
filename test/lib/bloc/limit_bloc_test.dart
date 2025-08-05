@@ -22,7 +22,7 @@ void main() {
   int testDaysAfterUpdate = 1;
   int testPayday = 10;
   double testMaxLimit = 100.0;
-  int testHoursOfNewDay = 1;
+  int testSecondsOfNewDay = 2;
 
   setUpAll(() {
     registerFallbackValue(FakeDataModel());
@@ -140,7 +140,45 @@ void main() {
         when(() => mockStorageService.getFromPreferences())
             .thenAnswer((_) async => initialData
             ..lastUpdate = DateTime.now().add(Duration(
-              hours: -DateTime.now().hour - testHoursOfNewDay
+              hours: -DateTime.now().hour,
+              minutes: -DateTime.now().minute,
+              seconds: -DateTime.now().second - testSecondsOfNewDay
+              ))
+            );
+
+        when(() => mockStorageService.saveToPreferences(any()))
+            .thenAnswer((_) async {});
+
+        return LimitBloc(mockStorageService);
+      },
+      act: (bloc) => bloc.add(LoadDataEvent()),
+      expect: () => [
+        isA<LimitState>().having(
+          (s) => s.dataModel.lastUpdate!.day,
+          'lastUpdate',
+          DateTime.now().day,
+        ).having(
+          (s) => s.dataModel.actualLimit,
+          'actualLimit',
+          testActuallimit + initialData.limit,
+        )
+      ],
+      verify: (_) {
+        verify(() => mockStorageService.getFromPreferences()).called(1);
+        verify(() => mockStorageService.saveToPreferences(any())).called(1);
+      },
+    );
+
+    blocTest<LimitBloc, LimitState>(
+      'emits updated LimitState when date is changed very short time',
+      build: () {
+        when(() => mockStorageService.getFromPreferences())
+            .thenAnswer((_) async => initialData
+            ..lastUpdate = DateTime.now().add(Duration(
+              hours: -DateTime.now().hour,
+              minutes: -DateTime.now().minute,
+              seconds: -DateTime.now().second,
+              milliseconds: -DateTime.now().millisecond - 1
               ))
             );
 
