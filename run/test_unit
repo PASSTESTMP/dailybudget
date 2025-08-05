@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Zakończ, jeśli którykolwiek krok zwróci błąd
+set -e
+
+# Kolory do logów (opcjonalne)
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # brak koloru
+
+echo -e "${GREEN}📦 Aktualizuję pakiety...${NC}"
+flutter pub get
+
+echo -e "${GREEN}🧪 Uruchamiam testy Flutter...${NC}"
+flutter test
+
+# Jeśli dotarliśmy tutaj — testy przeszły
+echo -e "${GREEN}✅ Wszystkie testy zakończone sukcesem${NC}"
