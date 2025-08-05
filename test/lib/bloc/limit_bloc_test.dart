@@ -22,6 +22,7 @@ void main() {
   int testDaysAfterUpdate = 1;
   int testPayday = 10;
   double testMaxLimit = 100.0;
+  int testHoursOfNewDay = 1;
 
   setUpAll(() {
     registerFallbackValue(FakeDataModel());
@@ -124,6 +125,40 @@ void main() {
           (s) => s.dataModel.actualLimit,
           'actualLimit',
           testActuallimit + testDaysAfterUpdate * initialData.limit,
+        )
+      ],
+      verify: (_) {
+        verify(() => mockStorageService.getFromPreferences()).called(1);
+        verify(() => mockStorageService.saveToPreferences(any())).called(1);
+      },
+    );
+
+    blocTest<LimitBloc, LimitState>(
+      'emits updated LimitState when date is changed short time',
+      build: () {
+        testDaysAfterUpdate = 0;
+        when(() => mockStorageService.getFromPreferences())
+            .thenAnswer((_) async => initialData
+            ..lastUpdate = DateTime.now().add(Duration(
+              hours: -DateTime.now().hour - testHoursOfNewDay
+              ))
+            );
+
+        when(() => mockStorageService.saveToPreferences(any()))
+            .thenAnswer((_) async {});
+
+        return LimitBloc(mockStorageService);
+      },
+      act: (bloc) => bloc.add(LoadDataEvent()),
+      expect: () => [
+        isA<LimitState>().having(
+          (s) => s.dataModel.lastUpdate!.day,
+          'lastUpdate',
+          DateTime.now().day,
+        ).having(
+          (s) => s.dataModel.actualLimit,
+          'actualLimit',
+          testActuallimit + initialData.limit,
         )
       ],
       verify: (_) {
