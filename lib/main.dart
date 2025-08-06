@@ -13,12 +13,13 @@ Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Set the minimum window size for desktop platforms
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowMinSize(const Size(400, 600));
   }else {
     await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp, // pionowo
-      DeviceOrientation.portraitDown, // odwrócony pion
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
   }
 

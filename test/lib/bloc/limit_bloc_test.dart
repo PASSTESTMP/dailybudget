@@ -41,7 +41,6 @@ void main() {
       ..actualLimit = testActuallimit
       ..budget = testBudget
       ..maxLimit = testMaxLimit
-      ..actualDate = testActualTime
       ..payday = testPayday
       ..limit = testLimit
       ..lastUpdate = null;

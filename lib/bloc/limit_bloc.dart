@@ -13,19 +13,19 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
     on<LoadDataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
-      newData.actualDate = clock.now();
+      DateTime actualDate = clock.now();
 
       if (newData.lastUpdate != null) {
-        bool isNewDay = newData.actualDate.day != newData.lastUpdate!.day ||
-            newData.actualDate.month != newData.lastUpdate!.month ||
-            newData.actualDate.year != newData.lastUpdate!.year;
+        bool isNewDay = actualDate.day != newData.lastUpdate!.day ||
+            actualDate.month != newData.lastUpdate!.month ||
+            actualDate.year != newData.lastUpdate!.year;
 
         if (isNewDay) {
-          int daysAfterCheck = (newData.actualDate.difference(newData.lastUpdate!).inSeconds.abs()/(24*60*60)).ceil();
+          int daysAfterCheck = (actualDate.difference(newData.lastUpdate!).inSeconds.abs()/(24*60*60)).ceil();
           newData.actualLimit += newData.limit * daysAfterCheck;
         }
       }
-      newData.lastUpdate = newData.actualDate;
+      newData.lastUpdate = actualDate;
 
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
@@ -43,11 +43,12 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
     on<UpdateLimitEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
+      DateTime actualDate = clock.now();
 
       newData.budget -= event.spending;
-      int daysToPayday = newData.payday - newData.actualDate.day;
+      int daysToPayday = newData.payday - actualDate.day;
       if (daysToPayday < 0) {
-        daysToPayday += DateTime(newData.actualDate.year, newData.actualDate.month + 1, 1).day;
+        daysToPayday += DateTime(actualDate.year, actualDate.month + 1, 1).day;
       }
       
       newData.limit = (newData.budget / daysToPayday).clamp(0, newData.maxLimit);
