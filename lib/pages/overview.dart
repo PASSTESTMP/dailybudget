@@ -79,15 +79,15 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  void _startSTT() {
+  void _startSTT() async {
     SttService sttService = SttService();
-    sttService.initialize();
+    await sttService.initialize();
     if (!sttService.isAvailable){}
     sttService.startListening(
       onResult: (result) {
         if (result.isNotEmpty) {
           double spending = double.tryParse(result.replaceAll(',', '.')) ?? 0;
-          print(spending.toString());
+          context.read<LimitBloc>().add(AddSpendingEvent(spending));
         }
         
       }

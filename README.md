@@ -135,12 +135,12 @@ REPOSITORY:
 
 BACKLOG:
 
-B.1. Documentation
-B.2. STT
-B.3. Localization
-B.4. Widget Android
-B.5. Widget iOS
-B.6. Loging events
-B.7. Resizable overview
+1. Documentation
+2. STT
+3. Localization
+4. Widget Android
+5. Widget iOS
+6. Loging events
+7. ~~Resizable overview~~
 
 
