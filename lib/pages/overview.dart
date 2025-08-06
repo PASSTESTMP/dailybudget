@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
@@ -132,20 +133,28 @@ class _OverviewPageState extends State<OverviewPage> {
               circleColor = Colors.red;
               limitPercentage = 100;
             }
+            double windowWidth = MediaQuery.of(context).size.width;
+            double windowHeight = MediaQuery.of(context).size.height;
+            double minimumWindowSize = min(windowWidth, windowHeight);
+            double boxSize = minimumWindowSize * 0.5;
+            double distanceSize = minimumWindowSize * 0.2;
+            double strokeSize = minimumWindowSize * 0.1;
+            double mainFontSize = limitValue >= 100 ? minimumWindowSize * 0.12 : minimumWindowSize * 0.15;
+            double secondFontSize = minimumWindowSize * 0.08;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Limit Indicator
                 SizedBox(
-                  width: 300,
-                  height: 300,
+                  width: boxSize,
+                  height: boxSize,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
                       CircularProgressIndicator(
                         value: limitPercentage / 100,
                         strokeCap: StrokeCap.round,
-                        strokeWidth: 50,
+                        strokeWidth: strokeSize,
                         strokeAlign: 5,
                         color: circleColor,
                         backgroundColor: Colors.grey[300],
@@ -155,15 +164,15 @@ class _OverviewPageState extends State<OverviewPage> {
                         children: [
                           Text(
                             limitValue.toStringAsFixed(2),
-                            style: const TextStyle(
-                              fontSize: 62,
+                            style: TextStyle(
+                              fontSize: mainFontSize,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             'zł',
-                            style: const TextStyle(
-                              fontSize: 25,
+                            style: TextStyle(
+                              fontSize: secondFontSize,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -172,14 +181,14 @@ class _OverviewPageState extends State<OverviewPage> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
+                SizedBox(
+                  height: distanceSize,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.5,
+                      width: boxSize,
                       child: TextField(
                         controller: _controller,
                         decoration: const InputDecoration(
