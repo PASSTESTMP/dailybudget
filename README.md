@@ -129,3 +129,18 @@ BLOC:
 REPOSITORY:
 1. Parameters
 2. Actual data
+
+
+
+
+BACKLOG:
+
+B.1. Documentation
+B.2. STT
+B.3. Localization
+B.4. Widget Android
+B.5. Widget iOS
+B.6. Loging events
+B.7. Resizable overview
+
+
