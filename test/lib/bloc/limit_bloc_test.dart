@@ -24,7 +24,7 @@ void main() {
   int testPayday = 10;
   double testMaxLimit = 100.0;
   int testSecondsOfNewDay = 2;
-  DateTime testActualTime = DateTime(2025, 1, 1, 15, 0, 0);
+  DateTime testActualTime = DateTime(2025, 1, 11, 15, 0, 0);
 
   setUpAll(() {
     registerFallbackValue(FakeDataModel());

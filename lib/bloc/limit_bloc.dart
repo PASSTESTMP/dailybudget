@@ -47,8 +47,8 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
       newData.budget -= event.spending;
       int daysToPayday = newData.payday - actualDate.day;
-      if (daysToPayday < 0) {
-        daysToPayday += DateTime(actualDate.year, actualDate.month + 1, 1).day;
+      if (daysToPayday <= 0) {
+        daysToPayday = (DateTime(actualDate.year, actualDate.month + 1, newData.payday).difference(actualDate).inHours.toDouble()/24).ceil();
       }
       
       newData.limit = (newData.budget / daysToPayday).clamp(0, newData.maxLimit);
