@@ -21,6 +21,7 @@ dev_dependencies:
   equatable: ^2.0.7
   window_size: ^0.1.0
   speech_to_text: ^7.2.0
+  clock: ^1.1.2
 
 
 flutter:

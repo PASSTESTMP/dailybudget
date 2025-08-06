@@ -6,6 +6,7 @@ import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:clock/clock.dart';
 
 class MockLocalStorageService extends Mock implements LocalStorageService {}
 
@@ -23,9 +24,14 @@ void main() {
   int testPayday = 10;
   double testMaxLimit = 100.0;
   int testSecondsOfNewDay = 2;
+  DateTime testActualTime = DateTime(2025, 1, 1, 15, 0, 0);
 
   setUpAll(() {
     registerFallbackValue(FakeDataModel());
+    withClock(Clock.fixed(testActualTime), () {
+      expect(clock.now(), equals(testActualTime));
+      expect(clock.now().hour, equals(15));
+    });
   });
 
   setUp(() {
@@ -35,7 +41,7 @@ void main() {
       ..actualLimit = testActuallimit
       ..budget = testBudget
       ..maxLimit = testMaxLimit
-      ..actualDate = DateTime(2025, 1, 1)
+      ..actualDate = testActualTime
       ..payday = testPayday
       ..limit = testLimit
       ..lastUpdate = null;
