@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:dailybudget/Model/number_parser.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
