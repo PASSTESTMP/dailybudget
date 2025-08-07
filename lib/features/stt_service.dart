@@ -17,7 +17,7 @@ class SttService {
 
   Future<void> startListening({
     void Function(String)? onResult,
-    // String localeId = 'en_US',
+    String localeId = 'pl_PL',
   }) async {
     if (!_isAvailable) return;
     _isListening = true;
@@ -26,7 +26,7 @@ class SttService {
         _lastResult = result.recognizedWords;
         if (onResult != null) onResult(_lastResult);
       },
-      // localeId: localeId,
+      localeId: localeId,
     );
   }
 

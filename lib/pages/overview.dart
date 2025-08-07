@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dailybudget/Model/number_parser.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
@@ -79,15 +80,17 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  void _startSTT() async {
+  void _startSTT(TextEditingController controller) async {
     SttService sttService = SttService();
     await sttService.initialize();
     if (!sttService.isAvailable){}
     sttService.startListening(
       onResult: (result) {
         if (result.isNotEmpty) {
-          double spending = double.tryParse(result.replaceAll(',', '.')) ?? 0;
-          context.read<LimitBloc>().add(AddSpendingEvent(spending));
+          // double spending = parsePolishNumber(result)!.toDouble() ?? 0.0;
+          // double spending = double.tryParse(result.replaceAll(',', '.')) ?? 0.0;
+          // context.read<LimitBloc>().add(AddSpendingEvent(spending));
+          controller.text = result.replaceAll(',', '.');
         }
         
       }
@@ -139,7 +142,7 @@ class _OverviewPageState extends State<OverviewPage> {
             double boxSize = minimumWindowSize * 0.5;
             double distanceSize = minimumWindowSize * 0.2;
             double strokeSize = minimumWindowSize * 0.1;
-            double mainFontSize = limitValue >= 100 ? minimumWindowSize * 0.12 : minimumWindowSize * 0.15;
+            double mainFontSize = limitValue >= 100 ? minimumWindowSize * 0.11 : minimumWindowSize * 0.15;
             double secondFontSize = minimumWindowSize * 0.08;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -227,15 +230,23 @@ class _OverviewPageState extends State<OverviewPage> {
                           const SnackBar(content: Text('Speech-to-text is not supported on this platform')),
                           );
                         } else {
-                          _startSTT();
+                          _startSTT(_controller);
                         }
                         },
                         child: ElevatedButton(
-                        onPressed: null, // Disable default onPressed
-                        child: const Icon(Icons.mic),
-                      ),
+                          onPressed: null, // Disable default onPressed
+                          child: const Icon(Icons.mic),
+                        ),
                     )
                   ],
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    double spending = double.tryParse(_controller.text) ?? 0.0;
+                    context.read<LimitBloc>().add(AddSpendingEvent(spending));
+                    _controller.clear();
+                  },
+                  child: const Text("Send"),
                 ),
               ],
             );
