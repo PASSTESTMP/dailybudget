@@ -100,5 +100,12 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       await _storageService.saveToPreferences(newData);
       emit(LimitState(newData));
     });
+
+    on<ChangeLocaleEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+      newData.locale = event.locale;
+      emit(LimitState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
   }
 }

@@ -5,6 +5,7 @@ import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/stt_service.dart';
+import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class OverviewPage extends StatefulWidget {
 
 class _OverviewPageState extends State<OverviewPage> {
   final TextEditingController _controller = TextEditingController();
+  AppLocalizations? loc;
 
   void _openSettings(BuildContext context) {
     Navigator.push(
@@ -31,22 +33,22 @@ class _OverviewPageState extends State<OverviewPage> {
     showDialog(
       context: parentContext,
       builder: (context) => AlertDialog(
-        title: const Text('Spendings are less than zero'),
-        content: const Text('Update limits after income?'),
+        title: Text(loc!.alertDialogLess),
+        content: Text(loc!.alertDialogLessQestion),
         actions: [
           TextButton(
             onPressed: () {
               parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending));
               Navigator.pop(context);
             },
-            child: const Text('Yes'),
+            child: Text(loc!.yes),
           ),
           TextButton(
             onPressed: () {
               parentContext.read<LimitBloc>().add(AddSpendingEvent(spending));
               Navigator.pop(context);
             },
-            child: const Text('No'),
+            child: Text(loc!.no),
           ),
         ],
       ),
@@ -57,22 +59,22 @@ class _OverviewPageState extends State<OverviewPage> {
     showDialog(
       context: parentContext,
       builder: (context) => AlertDialog(
-        title: const Text('Spending are more than limit'),
-        content: const Text('Update limit or borrow from next days?'),
+        title: Text(loc!.alertDialogMore),
+        content: Text(loc!.alertDialogMoreQestion),
         actions: [
           TextButton(
             onPressed: () {
               parentContext.read<LimitBloc>().add(UpdateLimitEvent(spending));
               Navigator.pop(context);
             },
-            child: const Text('Update'),
+            child: Text(loc!.update),
           ),
           TextButton(
             onPressed: () {
               parentContext.read<LimitBloc>().add(AddSpendingEvent(spending));
               Navigator.pop(context);
             },
-            child: const Text('Borrow'),
+            child: Text(loc!.borrow),
           ),
         ],
       ),
@@ -108,9 +110,11 @@ class _OverviewPageState extends State<OverviewPage> {
     Color circleColor = Colors.green;
     double limitPercentage = 0.0;
 
+    loc = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Overview'),
+        title: Text(loc!.overviewTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -139,15 +143,20 @@ class _OverviewPageState extends State<OverviewPage> {
             double windowHeight = MediaQuery.of(context).size.height;
             double minimumWindowSize = min(windowWidth, windowHeight);
             double boxSize = minimumWindowSize * 0.5;
-            double distanceSize = minimumWindowSize * 0.2;
+            double distanceSize = minimumWindowSize * 0.1;
             double strokeSize = minimumWindowSize * 0.1;
             int charNumber = limitValue.toStringAsFixed(2).length;
             double mainFontSize = minimumWindowSize * 0.7 / charNumber;
             double secondFontSize = minimumWindowSize * 0.08;
+
+            // TODO: add currency parameter
+            String currency = loc!.pln;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Limit Indicator
+                SizedBox(
+                  height: distanceSize,
+                ),
                 SizedBox(
                   width: boxSize,
                   height: boxSize,
@@ -194,10 +203,10 @@ class _OverviewPageState extends State<OverviewPage> {
                       width: boxSize,
                       child: TextField(
                         controller: _controller,
-                        decoration: const InputDecoration(
-                          labelText: 'Enter Spending',
-                          border: OutlineInputBorder(),
-                          suffixText: "zł"
+                        decoration: InputDecoration(
+                          labelText: loc!.enterSpending,
+                          border: const OutlineInputBorder(),
+                          suffixText: currency,
                         ),
                         keyboardType: TextInputType.numberWithOptions(
                           signed: true,
@@ -227,7 +236,7 @@ class _OverviewPageState extends State<OverviewPage> {
                       onPointerDown: (_) {
                         if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Speech-to-text is not supported on this platform')),
+                          SnackBar(content: Text(loc!.promptSttNotAvailable)),
                           );
                         } else {
                           _startSTT(_controller);
@@ -240,13 +249,16 @@ class _OverviewPageState extends State<OverviewPage> {
                     )
                   ],
                 ),
+                SizedBox(
+                  height: distanceSize/2,
+                ),
                 ElevatedButton(
                   onPressed: () {
                     double spending = double.tryParse(_controller.text) ?? 0.0;
                     context.read<LimitBloc>().add(AddSpendingEvent(spending));
                     _controller.clear();
                   },
-                  child: const Text("Send"),
+                  child: Text(loc!.send),
                 ),
               ],
             );

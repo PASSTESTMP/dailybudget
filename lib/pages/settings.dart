@@ -3,6 +3,7 @@ import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
+import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,10 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final _formKey = GlobalKey<FormState>();
 
+  AppLocalizations? loc;
+
+  String? _currency;
+
   final _budgetController = TextEditingController();
   final _maxLimitController = TextEditingController();
   final _paydayController = TextEditingController();
@@ -47,8 +52,12 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return BlocBuilder<LimitBloc, LimitState>(
       builder: (context, state) {
+
+      _currency = state.dataModel.currency;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_budgetController.text != state.dataModel.budget.toStringAsFixed(2)) {
@@ -66,21 +75,41 @@ class _SettingsViewState extends State<SettingsView> {
         });
         
         return Scaffold(
-          appBar: AppBar(title: const Text('Settings')),
+          appBar: AppBar(
+            title: Text(loc!.settingsTitle),
+            actions: [
+              PopupMenuButton<Locale>(
+                onSelected: (locale) {
+                  context.read<LimitBloc>().add(ChangeLocaleEvent(locale));
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: Locale('en'),
+                    child: Text('English'),
+                  ),
+                  const PopupMenuItem(
+                    value: Locale('pl'),
+                    child: Text('Polski'),
+                  ),
+                ],
+              )
+            ],
+          ),
           body: Padding(
             padding: const EdgeInsets.all(16),
             child: Form(
               key: _formKey,
               child: ListView(
                 children: [
-                  _buildNumberField(context, 'Budget', _budgetController,
+
+                  _buildNumberField(context, loc.budget, _budgetController,
                       (value) => context.read<LimitBloc>().add(UpdateBudgetEvent(value))),
-                  _buildNumberField(context, 'Max limit', _maxLimitController,
+                  _buildNumberField(context, loc.maxLimit, _maxLimitController,
                       (value) => context.read<LimitBloc>().add(UpdateMaxLimitEvent(value))),
-                  _buildNumberField(context, 'Pay day of month', _paydayController,
+                  _buildNumberField(context, loc.payDay, _paydayController,
                       (value) => context.read<LimitBloc>().add(UpdatePaydayEvent(value)),
                       isInt: true),
-                  _buildNumberField(context, 'Limit', _limitController,
+                  _buildNumberField(context, loc.limit, _limitController,
                       (value) => context.read<LimitBloc>().add(UpdateLimitValueEvent(value))),
                   const SizedBox(height: 20),
                   ElevatedButton(
@@ -88,11 +117,11 @@ class _SettingsViewState extends State<SettingsView> {
                       if (_formKey.currentState!.validate()) {
                         context.read<LimitBloc>().add(UpdateLimitEvent(0.0));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Limit updated')),
+                          SnackBar(content: Text(loc.prompLimitUpdated)),
                         );
                       }
                     },
-                    child: const Text('Update limit'),
+                    child: Text(loc.update),
                   ),
                 ],
               ),
@@ -119,14 +148,14 @@ class _SettingsViewState extends State<SettingsView> {
         ],
         decoration: InputDecoration(
           labelText: label,
-          suffix: isInt ? Text("") : Text("zł"),
+          suffix: isInt ? Text("") : Text(_currency!),
           border: const OutlineInputBorder(),
         ),
         onFieldSubmitted: onChanged,
         validator: (value) {
           if (value == null || value.isEmpty) return 'Enter value';
           return isInt
-              ? (int.tryParse(value) == null ? 'Enter integer' : null)
+              ? (int.tryParse(value) == null ? '1 - 31' : null)
               : (double.tryParse(value) == null ? 'Enter number' : null);
         },
       ),
