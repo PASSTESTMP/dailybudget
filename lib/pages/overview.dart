@@ -106,15 +106,20 @@ class _OverviewPageState extends State<OverviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    // final limitBloc = context.read<LimitBloc>();
+    // context = widget.mainContext;
     double limitValue = 0;
     Color circleColor = Colors.green;
     double limitPercentage = 0.0;
 
-    loc = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc!.overviewTitle),
+        title: BlocBuilder<LimitBloc, LimitState>(
+          builder: (context, state) {
+            loc = AppLocalizations.of(context);
+            return Text(loc!.overviewTitle);
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -125,6 +130,7 @@ class _OverviewPageState extends State<OverviewPage> {
       body: Center(
         child: BlocBuilder<LimitBloc, LimitState>(
           builder: (context, state) {
+            loc = AppLocalizations.of(context);
             limitValue = state.dataModel.actualLimit;
             if (limitValue != 0 && state.dataModel.limit != 0) {
               limitPercentage = (limitValue / state.dataModel.limit) * 100;

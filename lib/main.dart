@@ -27,7 +27,10 @@ Future<void> main() async {
   }
 
   runApp(
-    MyApp(),
+    BlocProvider(
+      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
+      child: const MyApp(),
+    )
   );
 }
 
@@ -35,58 +38,44 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   final ThemeMode _themeMode = ThemeMode.system;
-  // void toggleTheme() {
-  //   _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
-      child: BlocBuilder<LimitBloc, LimitState>(
-        builder: (context, state) {
-          return MaterialApp(
-            locale: state.dataModel.locale,
-            supportedLocales: const [
-              Locale('en'),
-              Locale('pl'),
-            ],
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            title: 'Daily Budget',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
+    return BlocBuilder<LimitBloc, LimitState>(
+      builder: (context, state) {
+        return MaterialApp(
+          locale: state.dataModel.locale,
+          supportedLocales: const [
+            Locale('en'),
+            Locale('pl'),
+          ],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          title: 'Daily Budget',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            textTheme: const TextTheme(
+              bodyMedium: TextStyle(color: Colors.white70),
+              bodyLarge: TextStyle(color: Colors.white70),
+              bodySmall: TextStyle(color: Colors.white54),
             ),
-            darkTheme: ThemeData(
+            scaffoldBackgroundColor: const Color.fromARGB(255, 39, 39, 39),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 104, 127, 146),
               brightness: Brightness.dark,
-              textTheme: const TextTheme(
-                bodyMedium: TextStyle(color: Colors.white70),
-                bodyLarge: TextStyle(color: Colors.white70),
-                bodySmall: TextStyle(color: Colors.white54),
-              ),
-              scaffoldBackgroundColor: const Color.fromARGB(255, 39, 39, 39),
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color.fromARGB(255, 104, 127, 146),
-                brightness: Brightness.dark,
-              ),
             ),
-            themeMode: _themeMode,
-            home: const OverviewPage(),
-            // home: BlocProvider(
-            //   create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
-            //   child: const OverviewPage(),
-            // ),
-          );
-        },
-      )
+          ),
+          themeMode: _themeMode,
+          home: OverviewPage(),
+        );
+      }
     );
-
-
-
-    
   }
 }

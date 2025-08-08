@@ -13,10 +13,11 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
-      child: const SettingsView(),
-    );
+    return  BlocBuilder<LimitBloc, LimitState>(
+        builder: (context, state) {
+          return SettingsView();
+        }
+      );
   }
 }
 
