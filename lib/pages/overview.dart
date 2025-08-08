@@ -141,7 +141,8 @@ class _OverviewPageState extends State<OverviewPage> {
             double boxSize = minimumWindowSize * 0.5;
             double distanceSize = minimumWindowSize * 0.2;
             double strokeSize = minimumWindowSize * 0.1;
-            double mainFontSize = limitValue >= 100 ? minimumWindowSize * 0.11 : minimumWindowSize * 0.15;
+            int charNumber = limitValue.toStringAsFixed(2).length;
+            double mainFontSize = minimumWindowSize * 0.7 / charNumber;
             double secondFontSize = minimumWindowSize * 0.08;
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
