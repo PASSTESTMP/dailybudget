@@ -154,6 +154,9 @@ class _OverviewPageState extends State<OverviewPage> {
             int charNumber = limitValue.toStringAsFixed(2).length;
             double mainFontSize = minimumWindowSize * 0.7 / charNumber;
             double secondFontSize = minimumWindowSize * 0.08;
+            double secondDistance = min((windowHeight - (distanceSize + boxSize + distanceSize))/3, distanceSize*1.5);
+            double thirdDistance = min((windowHeight - (distanceSize + boxSize + secondDistance))/5, secondDistance/2);
+            
 
             // TODO: add currency parameter
             String currency = loc!.pln;
@@ -200,13 +203,14 @@ class _OverviewPageState extends State<OverviewPage> {
                   ),
                 ),
                 SizedBox(
-                  height: distanceSize,
+                  height: secondDistance,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: boxSize,
+                      // height: distanceSize,
                       child: TextField(
                         controller: _controller,
                         decoration: InputDecoration(
@@ -256,7 +260,7 @@ class _OverviewPageState extends State<OverviewPage> {
                   ],
                 ),
                 SizedBox(
-                  height: distanceSize/2,
+                  height: thirdDistance,
                 ),
                 ElevatedButton(
                   onPressed: () {

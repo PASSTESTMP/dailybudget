@@ -6,6 +6,7 @@ import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_size/window_size.dart';
@@ -15,6 +16,8 @@ import 'dart:io';
 Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
+
+  // debugPaintSizeEnabled = true;
 
   // Set the minimum window size for desktop platforms
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {

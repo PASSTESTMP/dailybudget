@@ -12,14 +12,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get alertDialogLess => 'Wydatek jest ujemny';
 
   @override
-  String get alertDialogLessQestion => 'Odświerzyć limit po przychodzie?';
+  String get alertDialogLessQestion =>
+      'Odświerzyć limit po wpływie do budżetu?';
 
   @override
-  String get alertDialogMore => 'Wydatek jest większy niz limit';
+  String get alertDialogMore => 'Wydatek jest większy niż limit';
 
   @override
   String get alertDialogMoreQestion =>
-      'Odswierzyc wydatek czy pozyczyc z kolejnego dnia?';
+      'Odświerzyć limit czy pożyczyć z kolejnego dnia?';
 
   @override
   String get yes => 'Tak';
@@ -31,10 +32,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get update => 'Odświerz';
 
   @override
-  String get borrow => 'Porzycz';
+  String get borrow => 'Pożycz';
 
   @override
-  String get overviewTitle => 'Budzet dzienny';
+  String get overviewTitle => 'Budżet dzienny';
 
   @override
   String get settingsTitle => 'Ustawienia';
@@ -56,7 +57,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get send => 'Wyślij';
 
   @override
-  String get budget => 'Budzet';
+  String get budget => 'Budżet';
 
   @override
   String get maxLimit => 'Maksymalny limit';
@@ -74,7 +75,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get updateLimit => 'Odświerz limit';
 
   @override
-  String get enterValue => 'Wspisz wartość';
+  String get enterValue => 'Wpisz wartość';
 
   @override
   String get enterInteger => 'Wpisz wartość';
@@ -86,5 +87,5 @@ class AppLocalizationsPl extends AppLocalizations {
   String get enterDay => '1 - 31';
 
   @override
-  String get dailyBudget => 'Dzienny Budzet';
+  String get dailyBudget => 'Dzienny Budżet';
 }
