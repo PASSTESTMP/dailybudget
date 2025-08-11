@@ -1,4 +1,5 @@
 import 'package:dailybudget/Model/data_model.dart';
+import 'package:flutter/material.dart';
 
 abstract class LimitEvent {}
 
@@ -56,4 +57,10 @@ class SaveSettingsEvent extends LimitEvent {
   final DataModel dataModel;
 
   SaveSettingsEvent(this.dataModel);
+}
+
+class ChangeLocaleEvent extends LimitEvent {
+  final Locale locale;
+
+  ChangeLocaleEvent(this.locale);
 }
