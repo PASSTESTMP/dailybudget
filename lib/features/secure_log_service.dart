@@ -2,14 +2,41 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SecureLogService {
   static final SecureLogService _instance = SecureLogService._internal();
   factory SecureLogService() => _instance;
   SecureLogService._internal();
 
-  final _key = encrypt.Key.fromLength(32); // 256-bit key (trzymaj bezpiecznie!)
-  final _iv = encrypt.IV.fromLength(16);   // IV dla AES
+  
+  late encrypt.Key _key;
+  late encrypt.IV _iv;
+
+  Future<void> initKeyAndIV() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String? keyBase64 = prefs.getString('aes_key');
+    String? ivBase64 = prefs.getString('aes_iv');
+
+    if (keyBase64 == null || ivBase64 == null) {
+      // Pierwsze uruchomienie → generujemy losowe wartości
+      final newKey = encrypt.Key.fromSecureRandom(32); // 256-bit
+      final newIv = encrypt.IV.fromSecureRandom(16);   // 128-bit
+
+      // Zapis w base64
+      await prefs.setString('aes_key', newKey.base64);
+      await prefs.setString('aes_iv', newIv.base64);
+
+      _key = newKey;
+      _iv = newIv;
+    } else {
+      // Odczyt zapisanych wartości
+      _key = encrypt.Key.fromBase64(keyBase64);
+      _iv = encrypt.IV.fromBase64(ivBase64);
+    }
+  }
+
 
   Future<File> _getLogFile() async {
     final dir = await getApplicationDocumentsDirectory();
@@ -17,11 +44,13 @@ class SecureLogService {
   }
 
   String _encrypt(String plainText) {
+    initKeyAndIV();
     final encrypter = encrypt.Encrypter(encrypt.AES(_key));
     return encrypter.encrypt(plainText, iv: _iv).base64;
   }
 
   String _decrypt(String cipherText) {
+    initKeyAndIV();
     final encrypter = encrypt.Encrypter(encrypt.AES(_key));
     return encrypter.decrypt64(cipherText, iv: _iv);
   }
