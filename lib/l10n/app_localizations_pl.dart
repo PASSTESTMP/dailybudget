@@ -88,4 +88,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get dailyBudget => 'Dzienny Budżet';
+
+  @override
+  String get showLog => 'Historia';
 }

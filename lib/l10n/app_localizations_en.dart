@@ -86,4 +86,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyBudget => 'Daily Budget';
+
+  @override
+  String get showLog => 'Show log';
 }

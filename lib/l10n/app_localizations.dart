@@ -253,6 +253,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily Budget'**
   String get dailyBudget;
+
+  /// No description provided for @showLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Show log'**
+  String get showLog;
 }
 
 class _AppLocalizationsDelegate

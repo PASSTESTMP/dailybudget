@@ -1,5 +1,6 @@
 import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
+import 'package:dailybudget/features/secure_log_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'limit_event.dart';
 import 'limit_state.dart';
@@ -7,6 +8,7 @@ import 'package:clock/clock.dart';
 
 class LimitBloc extends Bloc<LimitEvent, LimitState> {
   final LocalStorageService _storageService;
+  final secureLog = SecureLogService();
 
   LimitBloc(this._storageService) : super(LimitState(DataModel())){
 
@@ -39,6 +41,11 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
+      await secureLog.saveValue(
+        DateTime.now().toString(),
+        event.spending.toString(),
+        newData.budget.toString(),
+        newData.actualLimit.toString());
     });
 
     on<UpdateLimitEvent>((event, emit) async {
@@ -56,6 +63,11 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
+      await secureLog.saveValue(
+        DateTime.now().toString(),
+        event.spending.toString(),
+        newData.budget.toString(),
+        newData.actualLimit.toString());
     });
 
     on<UpdateBudgetEvent>((event, emit) async {
@@ -64,6 +76,11 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       newData.budget = double.tryParse(event.budget) ?? 0;
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
+      await secureLog.saveValue(
+        DateTime.now().toString(),
+        '0.0',
+        newData.budget.toString(),
+        newData.actualLimit.toString());
     });
 
     on<UpdateMaxLimitEvent>((event, emit) async {
@@ -88,6 +105,11 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       newData.limit = double.tryParse(event.limit) ?? 0;
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
+      await secureLog.saveValue(
+        DateTime.now().toString(),
+        '0.0',
+        newData.budget.toString(),
+        newData.actualLimit.toString());
     });
 
     on<SaveSettingsEvent>((event, emit) async {

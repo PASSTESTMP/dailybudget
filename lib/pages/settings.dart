@@ -2,6 +2,7 @@ import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/pages/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +48,13 @@ class _SettingsViewState extends State<SettingsView> {
     _borrowController.dispose();
     _limitController.dispose();
     super.dispose();
+  }
+
+  void _openLog(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LogPage()),
+    );
   }
 
   @override
@@ -121,6 +129,11 @@ class _SettingsViewState extends State<SettingsView> {
                       }
                     },
                     child: Text(loc.update),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _openLog(context),
+                    child: Text(loc.showLog),
                   ),
                 ],
               ),

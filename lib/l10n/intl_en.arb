@@ -24,5 +24,6 @@
   "enterInteger": "Enter integer",
   "enterNumber": "Enter number",
   "enterDay": "1 - 31",
-  "dailyBudget": "Daily Budget"
+  "dailyBudget": "Daily Budget",
+  "showLog": "Show log"
 }

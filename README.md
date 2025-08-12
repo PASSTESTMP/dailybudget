@@ -136,8 +136,8 @@ REPOSITORY:
 BACKLOG:
 
 1. Documentation
-2. STT
-3. Localization
+2. ~~STT~~
+3. ~~Localization~~
 4. Widget Android
 5. Widget iOS
 6. Loging events
