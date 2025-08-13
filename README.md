@@ -140,7 +140,7 @@ BACKLOG:
 3. ~~Localization~~
 4. Widget Android
 5. Widget iOS
-6. Loging events
+6. ~~Loging events~~
 7. ~~Resizable overview~~
 
 

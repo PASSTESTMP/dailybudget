@@ -44,21 +44,30 @@ class _LogPageState extends State<LogPage> {
       body: _headder.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              behavior: const ScrollBehavior().copyWith(
+                overscroll: false
+                ),
               child: _lines != ""
               ? Text(_lines)
-              : DataTable(
-                columns: _headder
-                  .map((key) => DataColumn(label: Text(key)))
-                  .toList(),
-                rows: _rows.map((row) {
-                  return DataRow(
-                    cells: _headder.map((col) {
-                      return DataCell(Text('${row[col] ?? ''}'));
-                    }).toList(),
-                  );
-                }).toList().reversed.toList(),
-              )
+              : SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // ← horyzontalny scroll
+                child: DataTable(
+                  columns: _headder
+                      .map((key) => DataColumn(label: Text(key)))
+                      .toList(),
+                  rows: _rows
+                      .map((row) {
+                        return DataRow(
+                          cells: _headder.map((col) {
+                            return DataCell(Text('${row[col] ?? ''}'));
+                          }).toList(),
+                        );
+                      })
+                      .toList()
+                      .reversed
+                      .toList(),
+                ),
+              ),
               
               // ListView.builder(
               //   itemCount: _lines.length,
