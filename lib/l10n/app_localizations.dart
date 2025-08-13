@@ -259,6 +259,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show log'**
   String get showLog;
+
+  /// No description provided for @logViewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Viewer'**
+  String get logViewer;
 }
 
 class _AppLocalizationsDelegate

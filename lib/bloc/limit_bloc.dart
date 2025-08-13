@@ -12,6 +12,8 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
   LimitBloc(this._storageService) : super(LimitState(DataModel())){
 
+    _init();
+
     on<LoadDataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
@@ -129,5 +131,9 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
     });
+  }
+  
+  Future<void> _init() async {
+    await secureLog.initKeyAndIV();
   }
 }

@@ -44,15 +44,17 @@ class SecureLogService {
   }
 
   String _encrypt(String plainText) {
-    initKeyAndIV();
     final encrypter = encrypt.Encrypter(encrypt.AES(_key));
     return encrypter.encrypt(plainText, iv: _iv).base64;
   }
 
   String _decrypt(String cipherText) {
-    initKeyAndIV();
     final encrypter = encrypt.Encrypter(encrypt.AES(_key));
     return encrypter.decrypt64(cipherText, iv: _iv);
+  }
+
+  String _prepareTimestamp(DateTime dt){
+    return "${dt.year}-${dt.month}-${dt.day} ${dt.hour}:${dt.minute}:${dt.second}";
   }
 
   Future<void> saveValue(
@@ -60,12 +62,12 @@ class SecureLogService {
     String spending,
     String budgetAfter,
     String limitLeft) async {
-    final now = DateTime.now().toIso8601String();
+    final now = _prepareTimestamp(DateTime.now());
     final logEntry = jsonEncode({
       'time': now,
-      'spending': spending,
-      'budget after': budgetAfter,
-      'limit left': limitLeft});
+      'spending': double.parse(spending).toStringAsFixed(2),
+      'budget after': double.parse(budgetAfter).toStringAsFixed(2),
+      'limit left': double.parse(limitLeft).toStringAsFixed(2)});
     final encrypted = _encrypt(logEntry);
 
     final file = await _getLogFile();

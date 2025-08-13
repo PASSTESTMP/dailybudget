@@ -25,5 +25,6 @@
   "enterNumber": "Wpisz wartość",
   "enterDay": "1 - 31",
   "dailyBudget": "Dzienny Budżet",
-  "showLog": "Historia"
+  "showLog": "Historia",
+  "logViewer": "Historia"
 }

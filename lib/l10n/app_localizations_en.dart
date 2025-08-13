@@ -89,4 +89,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showLog => 'Show log';
+
+  @override
+  String get logViewer => 'Log Viewer';
 }
