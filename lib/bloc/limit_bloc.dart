@@ -27,6 +27,9 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
         if (isNewDay) {
           int daysAfterCheck = (actualDate.difference(newData.lastUpdate!).inSeconds.abs()/(24*60*60)).ceil();
           newData.actualLimit += newData.limit * daysAfterCheck;
+          if (newData.actualLimit > newData.budget) {
+            newData.actualLimit = newData.budget;
+          }
         }
       }
       newData.lastUpdate = actualDate;
