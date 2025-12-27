@@ -94,4 +94,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get logViewer => 'Historia';
+
+  @override
+  String get commonList => 'Wspólna Lista';
 }

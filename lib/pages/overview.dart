@@ -5,6 +5,7 @@ import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/stt_service.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/pages/common_list.dart';
 import 'package:dailybudget/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,18 @@ class _OverviewPageState extends State<OverviewPage> {
   AppLocalizations? loc;
 
   void _openSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsPage()),
+    );
+  }
+  void _openList(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CommonListPage()),
+    );
+  }
+  void _openProducts(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsPage()),
@@ -273,6 +286,23 @@ class _OverviewPageState extends State<OverviewPage> {
             );
           }
         )
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            heroTag: 'gotolist',
+            onPressed: () => _openList(context),
+            child: Icon(Icons.list),
+            // backgroundColor: Colors.green,
+          ),
+          FloatingActionButton(
+            heroTag: 'gotoProducts',
+            onPressed: () => _openProducts(context),
+            child: Icon(Icons.star),
+            // backgroundColor: Colors.red,
+          ),
+        ],
       ),
     );
   }

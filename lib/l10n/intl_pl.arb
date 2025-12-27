@@ -26,5 +26,6 @@
   "enterDay": "1 - 31",
   "dailyBudget": "Dzienny Budżet",
   "showLog": "Historia",
-  "logViewer": "Historia"
+  "logViewer": "Historia",
+  "commonList": "Wspólna Lista"
 }

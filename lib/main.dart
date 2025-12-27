@@ -2,9 +2,14 @@ import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
+import 'package:dailybudget/bloc/list_bloc.dart';
+import 'package:dailybudget/bloc/list_event.dart';
+import 'package:dailybudget/bloc/product_bloc.dart';
+import 'package:dailybudget/bloc/product_event.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,16 +18,22 @@ import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
 
+bool isPC() {
+  // Tylko jeśli nie jesteśmy w przeglądarce
+  if (!kIsWeb) {
+    return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+  }
+  return false; // Web to nie PC natywny
+}
+
 Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
 
-  // debugPaintSizeEnabled = true;
-
   // Set the minimum window size for desktop platforms
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (isPC()) {
     setWindowMinSize(const Size(600, 800));
-  }else {
+  } else {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -30,15 +41,26 @@ Future<void> main() async {
   }
 
   runApp(
-    BlocProvider(
-      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
-      child: const MyApp(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
+        ),
+        BlocProvider(
+          create: (_) => ListBloc(LocalStorageService(DataModel()))..add(LoadListEvent()),
+        ),
+        BlocProvider(
+          create: (_) => ProductBloc(LocalStorageService(DataModel()))..add(LoadProductEvent()),
+        ),
+        // Add more BlocProviders here for other features
+      ],
+      child: const DailyBudgetApp(),
     )
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DailyBudgetApp extends StatelessWidget {
+  const DailyBudgetApp({super.key});
 
   final ThemeMode _themeMode = ThemeMode.system;
 

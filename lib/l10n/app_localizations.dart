@@ -265,6 +265,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Viewer'**
   String get logViewer;
+
+  /// No description provided for @commonList.
+  ///
+  /// In en, this message translates to:
+  /// **'Common List'**
+  String get commonList;
 }
 
 class _AppLocalizationsDelegate

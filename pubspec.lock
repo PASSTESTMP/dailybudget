@@ -50,7 +50,7 @@ packages:
     source: hosted
     version: "9.0.0"
   bloc_test:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: bloc_test
       sha256: "1dd549e58be35148bc22a9135962106aa29334bc1e3f285994946a1057b29d7b"
@@ -82,7 +82,7 @@ packages:
     source: hosted
     version: "0.2.0"
   clock:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: clock
       sha256: fddb70d9b5277016c77a80201021d40a2247104d9f4aa7bab7157b7e3f05b84b
@@ -130,7 +130,7 @@ packages:
     source: hosted
     version: "0.4.1"
   encrypt:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: encrypt
       sha256: "62d9aa4670cc2a8798bab89b39fc71b6dfbacf615de6cf5001fb39f7e4a996a2"
@@ -138,7 +138,7 @@ packages:
     source: hosted
     version: "5.0.3"
   equatable:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: equatable
       sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
@@ -175,7 +175,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_bloc
       sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
@@ -191,7 +191,7 @@ packages:
     source: hosted
     version: "5.0.0"
   flutter_localization:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_localization
       sha256: "578a73455a0deffc4169ef9372ba0562a3e2cff563e5c524ea87bc96daa519c0"
@@ -246,7 +246,7 @@ packages:
     source: hosted
     version: "4.1.2"
   intl:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: intl
       sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
@@ -350,7 +350,7 @@ packages:
     source: hosted
     version: "2.0.0"
   mocktail:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: mocktail
       sha256: "890df3f9688106f25755f26b1c60589a92b3ab91a22b8b224947ad041bf172d8"
@@ -390,7 +390,7 @@ packages:
     source: hosted
     version: "1.9.1"
   path_provider:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -494,7 +494,7 @@ packages:
     source: hosted
     version: "2.2.0"
   shared_preferences:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: shared_preferences
       sha256: "6e8bf70b7fef813df4e9a36f658ac46d107db4b4cfe1048b477d4e453a8159f5"
@@ -611,7 +611,7 @@ packages:
     source: hosted
     version: "1.10.1"
   speech_to_text:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: speech_to_text
       sha256: bae858a6b838489e46428f1b5ba66ce65116eb5d22c00c360b9b262df98595b8
@@ -755,7 +755,7 @@ packages:
     source: hosted
     version: "1.2.1"
   window_size:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: window_size
       sha256: "8ba77a3df7bd686e60b21e699e60e1b103e6515950954b46c4fb6f513586e278"

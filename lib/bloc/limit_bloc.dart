@@ -31,6 +31,8 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
       }
       newData.lastUpdate = actualDate;
 
+      newData.actualLimit = newData.actualLimit.clamp(double.negativeInfinity, newData.budget);
+
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
     });
