@@ -144,3 +144,16 @@ BACKLOG:
 7. ~~Resizable overview~~
 
 
+Additions:
+
+List
+1. new page
+2. open with floating button
+3. data model for list
+4. just show constant shopping list
+5. add shared preferences
+6. add firebase
+
+
+Product
+t.b.d.

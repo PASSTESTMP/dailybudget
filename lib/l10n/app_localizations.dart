@@ -170,6 +170,12 @@ abstract class AppLocalizations {
   /// **'\$'**
   String get usd;
 
+  /// No description provided for @euro.
+  ///
+  /// In en, this message translates to:
+  /// **'euro'**
+  String get euro;
+
   /// No description provided for @enterSpending.
   ///
   /// In en, this message translates to:
@@ -265,6 +271,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Viewer'**
   String get logViewer;
+
+  /// No description provided for @commonListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Common List'**
+  String get commonListTitle;
+
+  /// No description provided for @listSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'List Settings'**
+  String get listSettingsTitle;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @currencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currencyLabel;
+
+  /// No description provided for @lbeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Log By Email'**
+  String get lbeLabel;
+
+  /// No description provided for @useCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Cloud'**
+  String get useCloud;
+
+  /// No description provided for @firebaseCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase'**
+  String get firebaseCloud;
+
+  /// No description provided for @googleCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Cloud'**
+  String get googleCloud;
+
+  /// No description provided for @userCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'User Backend'**
+  String get userCloud;
 }
 
 class _AppLocalizationsDelegate

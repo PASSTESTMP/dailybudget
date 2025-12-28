@@ -45,6 +45,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usd => '\$';
 
   @override
+  String get euro => 'euro';
+
+  @override
   String get enterSpending => 'Enter Spending';
 
   @override
@@ -92,4 +95,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logViewer => 'Log Viewer';
+
+  @override
+  String get commonListTitle => 'Common List';
+
+  @override
+  String get listSettingsTitle => 'List Settings';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get currencyLabel => 'Currency';
+
+  @override
+  String get lbeLabel => 'Log By Email';
+
+  @override
+  String get useCloud => 'Use Cloud';
+
+  @override
+  String get firebaseCloud => 'Firebase';
+
+  @override
+  String get googleCloud => 'Google Cloud';
+
+  @override
+  String get userCloud => 'User Backend';
 }

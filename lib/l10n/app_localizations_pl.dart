@@ -47,6 +47,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get usd => '\$';
 
   @override
+  String get euro => 'euro';
+
+  @override
   String get enterSpending => 'Wpisz kwotę wydatku';
 
   @override
@@ -94,4 +97,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get logViewer => 'Historia';
+
+  @override
+  String get commonListTitle => 'Wspólna Lista';
+
+  @override
+  String get listSettingsTitle => 'Ustawienia Listy';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get currencyLabel => 'Waluta';
+
+  @override
+  String get lbeLabel => 'Loguj za pomocą Email';
+
+  @override
+  String get useCloud => 'Używaj chmury';
+
+  @override
+  String get firebaseCloud => 'Firebase';
+
+  @override
+  String get googleCloud => 'Google Cloud';
+
+  @override
+  String get userCloud => 'Własny Backend';
 }

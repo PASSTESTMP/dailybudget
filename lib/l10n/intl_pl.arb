@@ -11,6 +11,7 @@
   "settingsTitle": "Ustawienia",
   "pln": "zł",
   "usd": "$",
+  "euro": "euro",
   "enterSpending": "Wpisz kwotę wydatku",
   "promptSttNotAvailable": "Speech-to-text jest nieobsługiwany przez platformę",
   "send": "Wyślij",
@@ -26,5 +27,14 @@
   "enterDay": "1 - 31",
   "dailyBudget": "Dzienny Budżet",
   "showLog": "Historia",
-  "logViewer": "Historia"
+  "logViewer": "Historia",
+  "commonListTitle": "Wspólna Lista",
+  "listSettingsTitle": "Ustawienia Listy",
+  "email": "Email",
+  "currencyLabel": "Waluta",
+  "lbeLabel": "Loguj za pomocą Email",
+  "useCloud": "Używaj chmury",
+  "firebaseCloud": "Firebase",
+  "googleCloud": "Google Cloud",
+  "userCloud": "Własny Backend"
 }
