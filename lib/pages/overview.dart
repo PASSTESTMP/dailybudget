@@ -6,6 +6,7 @@ import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/stt_service.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/settings.dart';
+import 'package:dailybudget/pages/shopping_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,13 @@ class _OverviewPageState extends State<OverviewPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsPage()),
+    );
+  }
+
+  void _openListPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CommonListPage()),
     );
   }
 
@@ -273,6 +281,25 @@ class _OverviewPageState extends State<OverviewPage> {
             );
           }
         )
+      ),
+
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FloatingActionButton(
+            onPressed: () => _openListPage(context),
+            child: Icon(Icons.list),
+            // backgroundColor: Colors.green,
+          ),
+          FloatingActionButton(
+            heroTag: 'gotoProducts',
+            onPressed: () {
+              Navigator.pushNamed(context, '/default_list');
+            },
+            child: Icon(Icons.star),
+            // backgroundColor: Colors.red,
+          ),
+        ],
       ),
     );
   }
