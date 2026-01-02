@@ -1,8 +1,12 @@
 import 'package:dailybudget/Model/data_model.dart';
+import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
+import 'package:dailybudget/bloc/list_bloc.dart';
+import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
+import 'package:dailybudget/features/local_storage_service_list.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/material.dart';
@@ -30,15 +34,22 @@ Future<void> main() async {
   }
 
   runApp(
-    BlocProvider(
-      create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
-      child: const MyApp(),
+    MultiBlocProvider(
+      providers: [
+      BlocProvider(
+        create: (_) => LimitBloc(LocalStorageService(DataModel()))..add(LoadDataEvent()),
+      ),
+      BlocProvider(
+        create: (_) => ListBloc(LocalStorageServiceList(ListDataModel()))..add(LoadListDataEvent()),
+      ),
+      ],
+      child: const DailyBudgetApp(),
     )
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DailyBudgetApp extends StatelessWidget {
+  const DailyBudgetApp({super.key});
 
   final ThemeMode _themeMode = ThemeMode.system;
 
