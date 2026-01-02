@@ -9,6 +9,7 @@ import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/features/local_storage_service_list.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
+
+bool isPC() {
+  // Tylko jeśli nie jesteśmy w przeglądarce
+  if (!kIsWeb) {
+    return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+  }
+  return false; // Web to nie PC natywny
+}
 
 Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app

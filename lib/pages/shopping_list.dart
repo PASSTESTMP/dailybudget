@@ -3,6 +3,7 @@ import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/pages/list_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,13 @@ class CommonListPage extends StatefulWidget {
 class _CommonListPageState extends State<CommonListPage> {
   List<Map<String, dynamic>> _items = [];
   AppLocalizations? loc;
+
+  void _openSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ListSettingsPage()),
+    );
+  }
 
   @override
   void initState() {
@@ -196,10 +204,10 @@ class _CommonListPageState extends State<CommonListPage> {
         ),
         actions: [
           // TODO: correct button to settings
-          // IconButton(
-          //   icon: const Icon(Icons.settings),
-          //   onPressed: () => _openSettings(context),
-          // ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => _openSettings(context),
+          ),
         ],
       ),
       body: BlocBuilder<ListBloc, ListState>(

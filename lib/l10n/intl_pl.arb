@@ -36,5 +36,6 @@
   "useCloud": "Używaj chmury",
   "firebaseCloud": "Firebase",
   "googleCloud": "Google Cloud",
-  "userCloud": "Własny Backend"
+  "userCloud": "Własny Backend",
+  "password": "Hasło"
 }

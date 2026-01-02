@@ -4,6 +4,7 @@ import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/main.dart' show isPC;
 import 'package:dailybudget/pages/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +36,7 @@ class _ListSettingsViewState extends State<ListSettingsView> {
   AppLocalizations? loc;
 
 
-  final _budgetController = TextEditingController();
+  final _emailController = TextEditingController();
   final _maxLimitController = TextEditingController();
   final _paydayController = TextEditingController();
   final _borrowController = TextEditingController();
@@ -43,7 +44,7 @@ class _ListSettingsViewState extends State<ListSettingsView> {
 
   @override
   void dispose() {
-    _budgetController.dispose();
+    _emailController.dispose();
     _maxLimitController.dispose();
     _paydayController.dispose();
     _borrowController.dispose();
@@ -66,8 +67,8 @@ class _ListSettingsViewState extends State<ListSettingsView> {
       builder: (context, state) {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_budgetController.text != state.dataModel.budget.toStringAsFixed(2)) {
-            _budgetController.text = state.dataModel.budget.toStringAsFixed(2);
+          if (_emailController.text != state.dataModel.email) {
+            _emailController.text = state.dataModel.budget.toStringAsFixed(2);
           }
           if (_maxLimitController.text != state.dataModel.maxLimit.toStringAsFixed(2)) {
             _maxLimitController.text = state.dataModel.maxLimit.toStringAsFixed(2);
@@ -129,22 +130,13 @@ class _ListSettingsViewState extends State<ListSettingsView> {
                     child: Text(loc.update),
                   ),
                   const SizedBox(height: 20),
-                  DropdownButton<String>(
-                    value: _currencyController,
-                    items: [
-                      loc.pln,
-                      loc.usd, 'EUR'].map((currency) {
-                      return DropdownMenuItem(value: currency, child: Text(currency));
-                    }).toList(),
-                    onChanged: (value) => context.read<ListBloc>().add(UpdateCurrencyEvent(value)),
-                  ),
                   CheckboxListTile(
-                    title: Text('Log by email'),
+                    title: Text(loc.lbeLabel),
                     value: _logByEmailController,
                     onChanged: (value) => context.read<ListBloc>().add(UpdateLogByEmailEvent(value)),
                   ),
                   CheckboxListTile(
-                    title: Text('Use Cloud'),
+                    title: Text(loc.useCloud),
                     value: _useCloudController,
                     onChanged: (value) async {
                       if (value != null){

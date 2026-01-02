@@ -36,5 +36,6 @@
   "useCloud": "Use Cloud",
   "firebaseCloud": "Firebase",
   "googleCloud": "Google Cloud",
-  "userCloud": "User Backend"
+  "userCloud": "User Backend",
+  "password": "Password"
 }
