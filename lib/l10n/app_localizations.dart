@@ -325,6 +325,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User Backend'**
   String get userCloud;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @errInitFire.
+  ///
+  /// In en, this message translates to:
+  /// **'Error initializing Firebase: {e}'**
+  String errInitFire(Object e);
+
+  /// No description provided for @errUploFire.
+  ///
+  /// In en, this message translates to:
+  /// **'Error uploading data: {e}'**
+  String errUploFire(Object e);
 }
 
 class _AppLocalizationsDelegate

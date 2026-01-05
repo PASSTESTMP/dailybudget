@@ -122,4 +122,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userCloud => 'User Backend';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String errInitFire(Object e) {
+    return 'Error initializing Firebase: $e';
+  }
+
+  @override
+  String errUploFire(Object e) {
+    return 'Error uploading data: $e';
+  }
 }

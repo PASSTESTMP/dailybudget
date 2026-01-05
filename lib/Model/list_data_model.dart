@@ -1,3 +1,5 @@
+import 'package:dailybudget/l10n/app_localizations.dart';
+
 class ListDataModel {
   String id = '';
   List<Item> items = [];
@@ -11,6 +13,11 @@ class Item {
   bool checked = false;
 
   Item(this.text, {this.category = ''});
+
+
+  factory Item.fromString(String data) {
+    return Item(data);
+  }
 }
 
 Map<String, dynamic> itemToJson(Item item) {

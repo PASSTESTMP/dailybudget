@@ -33,6 +33,29 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       await _storageService.saveToPreferences(newData);
     });
 
+    on<SaveItemEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+      final Item item = Item.fromString(event.item);
+
+      newData.items.add(item);
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
+    on<UpdateLogByEmailEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
+    on<UpdateCloudProviderEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
 
     _init();
   }

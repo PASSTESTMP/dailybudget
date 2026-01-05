@@ -124,4 +124,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get userCloud => 'Własny Backend';
+
+  @override
+  String get password => 'Hasło';
+
+  @override
+  String errInitFire(Object e) {
+    return 'Błąd inicjalizacji Firebase: $e';
+  }
+
+  @override
+  String errUploFire(Object e) {
+    return 'Błąd przesyłania danych: $e';
+  }
 }

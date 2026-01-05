@@ -1,11 +1,16 @@
+import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
+import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
+import 'package:dailybudget/features/auth_service.dart';
+import 'package:dailybudget/features/use_cloud.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/main.dart' show isPC;
 import 'package:dailybudget/pages/log.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,20 +40,19 @@ class _ListSettingsViewState extends State<ListSettingsView> {
 
   AppLocalizations? loc;
 
-
   final _emailController = TextEditingController();
-  final _maxLimitController = TextEditingController();
-  final _paydayController = TextEditingController();
-  final _borrowController = TextEditingController();
-  final _limitController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _useCloudController = ValueNotifier<bool>(false);
+  final _logByEmailController = ValueNotifier<bool>(false);
+  final _cloudController = ValueNotifier<CloudProvider>(FirebaseCloudProvider());
 
   @override
   void dispose() {
     _emailController.dispose();
-    _maxLimitController.dispose();
-    _paydayController.dispose();
-    _borrowController.dispose();
-    _limitController.dispose();
+    _passwordController.dispose();
+    _useCloudController.dispose();
+    _logByEmailController.dispose();
+    _cloudController.dispose();
     super.dispose();
   }
 
@@ -62,23 +66,22 @@ class _ListSettingsViewState extends State<ListSettingsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final settings = SettingsDataModel();
+    settings.loadSettings();
 
     return BlocBuilder<LimitBloc, LimitState>(
       builder: (context, state) {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_emailController.text != state.dataModel.email) {
-            _emailController.text = state.dataModel.budget.toStringAsFixed(2);
+          if (_emailController.text != settings.email) {
+            _emailController.text = settings.email;
           }
-          if (_maxLimitController.text != state.dataModel.maxLimit.toStringAsFixed(2)) {
-            _maxLimitController.text = state.dataModel.maxLimit.toStringAsFixed(2);
+          if (_passwordController.text != settings.password) {
+            _passwordController.text = settings.password;
           }
-          if (_paydayController.text != state.dataModel.payday.toString()) {
-            _paydayController.text = state.dataModel.payday.toString();
-          }
-          if (_limitController.text != state.dataModel.limit.toStringAsFixed(2)) {
-            _limitController.text = state.dataModel.limit.toStringAsFixed(2);
-          }
+          _useCloudController.value = settings.useCloud;
+          _logByEmailController.value = settings.logByEmail;
+          _cloudController.value = settings.cloudProvider;
         });
         
         return Scaffold(
@@ -112,35 +115,14 @@ class _ListSettingsViewState extends State<ListSettingsView> {
               key: _formKey,
               child: ListView(
                 children: [
-
-                  _buildTextField(context, loc!.email, _emailController,
-                      (value) => context.read<ListBloc>().add(UpdateEmailEvent(value))),
-                  _buildTextField(context, loc!.password, _passwordController,
-                      (value) => context.read<ListBloc>().add(UpdatePasswordEvent(value))),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        context.read<LimitBloc>().add(UpdateLimitEvent(0.0));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(loc.prompLimitUpdated)),
-                        );
-                      }
-                    },
-                    child: Text(loc.update),
-                  ),
-                  const SizedBox(height: 20),
                   CheckboxListTile(
-                    title: Text(loc.lbeLabel),
-                    value: _logByEmailController,
-                    onChanged: (value) => context.read<ListBloc>().add(UpdateLogByEmailEvent(value)),
-                  ),
-                  CheckboxListTile(
-                    title: Text(loc.useCloud),
-                    value: _useCloudController,
+                    title: Text(loc!.useCloud),
+                    value: settings.useCloud,
                     onChanged: (value) async {
                       if (value != null){
-                        context.read<SettingsModel>().setUseCloud(value);
+                        settings.useCloud = value;
+                        await settings.saveSettings();
+                        setState((){});
                         if (value && !isPC()){
                           if (settings.cloudProvider is FirebaseCloudProvider) {
                             if (settings.logByEmail) {
@@ -166,8 +148,19 @@ class _ListSettingsViewState extends State<ListSettingsView> {
                     },
                   ),
                   if (settings.useCloud)
+                    CheckboxListTile(
+                      title: Text(loc.lbeLabel),
+                      value: settings.logByEmail,
+                      onChanged: (value) => context.read<ListBloc>().add(UpdateLogByEmailEvent(value ?? true)),
+                    ),
+                    _buildTextField(context, loc.email, _emailController,
+                        (value) => settings.email = value),
+                    _buildTextField(context, loc.password, _passwordController,
+                        (value) => settings.password = value),
+                    const SizedBox(height: 20),
+
                     DropdownButton<CloudProvider>(
-                      value: _cloudController,
+                      value: settings.cloudProvider,
                       items: [
                         DropdownMenuItem(
                           value: FirebaseCloudProvider(),
@@ -179,14 +172,18 @@ class _ListSettingsViewState extends State<ListSettingsView> {
                         ),
                         DropdownMenuItem(
                           value: UserBackendCloudProvider(),
-                          child: Text(loc.userBackend),
+                          child: Text(loc.userCloud),
                         ),
                       ],
                       onChanged: (value) {
-                        if (value != null) context.read<SettingsModel>().setCloudProvider(value);
+                        if (value != null) {
+                          settings.cloudProvider = value;
+                          settings.saveSettings();
+                          setState((){});
+                        }
                       },
                     ),
-                    Text(_infoMessageController),
+                    Text(settings.infoMessage),
                 ],
               ),
             ),
