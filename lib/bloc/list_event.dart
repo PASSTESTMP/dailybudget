@@ -15,7 +15,7 @@ class RemoveItemEvent extends ListEvent {
 }
 
 class SaveItemEvent extends ListEvent {
-  final String item;
+  final Item item;
   SaveItemEvent(this.item);
 }
 

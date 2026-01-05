@@ -10,6 +10,7 @@ import 'package:dailybudget/pages/shopping_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OverviewPage extends StatefulWidget {
   const OverviewPage({super.key});
@@ -277,6 +278,16 @@ class _OverviewPageState extends State<OverviewPage> {
                   },
                   child: Text(loc!.send),
                 ),
+                // --------- Debug only ---------
+                ElevatedButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
+                    print('SharedPreferences cleared');
+                  },
+                  child: Text('Clear prefs (debug)'),
+                ),
+                // --------- Debug only end ---------
               ],
             );
           }

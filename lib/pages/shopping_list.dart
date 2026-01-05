@@ -18,7 +18,7 @@ class CommonListPage extends StatefulWidget {
 }
 
 class _CommonListPageState extends State<CommonListPage> {
-  List<Map<String, dynamic>> _items = [];
+  List<Item> _items = [];
   AppLocalizations? loc;
 
   void _openSettings(BuildContext context) {
@@ -31,11 +31,14 @@ class _CommonListPageState extends State<CommonListPage> {
   @override
   void initState() {
     super.initState();
-    LoadDataEvent();
+    LoadListDataEvent();
+    _items = context.read<ListBloc>().state.data.items;
     // _loadItems();
   }
   // TODO: move to service
   // Future<void> _loadItems() async {
+  //   context.read<ListBloc>().add(LoadDataEvent());
+
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   String? itemsJson = prefs.getString('items');
   //   if (itemsJson != null) {
@@ -76,7 +79,7 @@ class _CommonListPageState extends State<CommonListPage> {
 
   Future<void> _saveItems() async {
 
-    context.read<ListBloc>().add(SaveItemEvent(_items.last.toString()));
+    context.read<ListBloc>().add(SaveItemEvent(_items.last));
 
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     // await prefs.setString('items', json.encode(_items));
@@ -96,7 +99,7 @@ class _CommonListPageState extends State<CommonListPage> {
 
   void _addItem() {
     setState(() {
-      _items.add({'text': 'NewItem', 'checked': false});
+      _items.add(itemFromJson({'text': 'NewItem', 'checked': false, 'category': ''}));
     });
     _saveItems();
     _editItem(_items.length - 1);
@@ -112,7 +115,7 @@ class _CommonListPageState extends State<CommonListPage> {
           TextButton(
             onPressed: () {
                 setState(() {
-                _items.removeWhere((item) => item['checked'] == true);
+                _items.removeWhere((item) => item.checked == true);
               });
               _saveItems();
               Navigator.of(context).pop();
@@ -140,7 +143,7 @@ class _CommonListPageState extends State<CommonListPage> {
 
   void _editItem(int index) {
     TextEditingController controller =
-        TextEditingController(text: _items[index]['text']);
+        TextEditingController(text: _items[index].text);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selection = TextSelection(
         baseOffset: 0,
@@ -157,7 +160,7 @@ class _CommonListPageState extends State<CommonListPage> {
           decoration: InputDecoration(hintText: 'Enter new text'),
           onSubmitted: (value) {
             setState(() {
-              _items[index]['text'] = value;
+              _items[index].text = value;
             });
             _saveItems();
             Navigator.of(context).pop();
@@ -167,7 +170,7 @@ class _CommonListPageState extends State<CommonListPage> {
           TextButton(
             onPressed: () {
               setState(() {
-                _items[index]['text'] = controller.text;
+                _items[index].text = controller.text;
               });
               _saveItems();
               Navigator.of(context).pop();
@@ -191,7 +194,7 @@ class _CommonListPageState extends State<CommonListPage> {
 
   void _toggleCheck(int index) {
     setState(() {
-      _items[index]['checked'] = !_items[index]['checked'];
+      _items[index].checked = !_items[index].checked;
     });
     _saveItems();
   }
@@ -237,13 +240,13 @@ class _CommonListPageState extends State<CommonListPage> {
               onLongPress: () => _editItem(index),
               child: ListTile(
             leading: Checkbox(
-              value: item['checked'],
+              value: item.checked,
               onChanged: (value) => _toggleCheck(index),
             ),
             title: Text(
-              item['text'],
+              item.text,
               style: TextStyle(
-                decoration: item['checked']
+                decoration: item.checked
                 ? TextDecoration.lineThrough
                 : TextDecoration.none,
               ),

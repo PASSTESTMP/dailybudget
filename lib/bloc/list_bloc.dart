@@ -35,9 +35,8 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
     on<SaveItemEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
-      final Item item = Item.fromString(event.item);
 
-      newData.items.add(item);
+      newData.items.add(event.item);
 
       emit(ListState(newData));
       await _storageService.saveToPreferences(newData);

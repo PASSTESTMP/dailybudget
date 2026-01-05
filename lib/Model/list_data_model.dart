@@ -1,5 +1,3 @@
-import 'package:dailybudget/l10n/app_localizations.dart';
-
 class ListDataModel {
   String id = '';
   List<Item> items = [];

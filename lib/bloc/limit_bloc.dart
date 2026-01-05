@@ -1,4 +1,5 @@
 import 'package:dailybudget/Model/data_model.dart';
+import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/features/secure_log_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,8 +15,16 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
 
     _init();
 
+    updateSettings(String localeCode) {
+      SettingsDataModel settingsData = SettingsDataModel();
+      settingsData.loadSettings();
+      settingsData.locLanguageCode = localeCode;
+      settingsData.saveSettings();
+    }
+
     on<LoadDataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
+      updateSettings(newData.locale.languageCode);
 
       DateTime actualDate = clock.now();
 
@@ -131,6 +140,7 @@ class LimitBloc extends Bloc<LimitEvent, LimitState> {
     on<ChangeLocaleEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
       newData.locale = event.locale;
+      updateSettings(newData.locale.languageCode);
       emit(LimitState(newData));
       await _storageService.saveToPreferences(newData);
     });

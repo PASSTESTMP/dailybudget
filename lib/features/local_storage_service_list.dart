@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dailybudget/Model/list_data_model.dart';
 
@@ -12,27 +15,34 @@ class LocalStorageServiceList {
 
   Future<ListDataModel> getFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    // dataModel.actualLimit = prefs.getDouble('actualLimit') ?? 0;
-    // dataModel.budget = prefs.getDouble('budget') ?? 0;
-    // dataModel.maxLimit = prefs.getDouble('maxLimit') ?? 100;
-    // dataModel.payday = prefs.getInt('payday') ?? 10;
-    // dataModel.limit = prefs.getDouble('limit') ?? 0;
-    // String? lastUpdateString = prefs.getString(_dataKey);
-    // if (lastUpdateString != null) {
-    //   dataModel.lastUpdate = DateTime.parse(lastUpdateString);
-    // }
+
+    dataModel.id = prefs.getString('id') ?? '';
+    dataModel.ownerId = prefs.getString('ownerId') ?? '';
+    dataModel.sharedWith = prefs.getStringList('sharedWith') ?? [];
+    String? itemsJson = prefs.getString('items');
+
+
+    if (itemsJson != null) {
+      final itemsToDecode = List<Map<String, dynamic>>.from(jsonDecode(itemsJson));
+      dataModel.items = itemsToDecode
+          .map((itemJson) => itemFromJson(itemJson))
+          .toList();
+    } else {
+      dataModel.items = [];
+    }
+
     return dataModel;
   }
 
   Future<void> saveToPreferences(ListDataModel newData) async {
     final prefs = await SharedPreferences.getInstance();
-    // await prefs.setDouble('actualLimit', newData.actualLimit);
-    // await prefs.setDouble('budget', newData.budget);
-    // await prefs.setDouble('maxLimit', newData.maxLimit);
-    // await prefs.setInt('payday', newData.payday);
-    // await prefs.setDouble('limit', newData.limit);
-    // if (newData.lastUpdate != null) {
-    //   await prefs.setString(_dataKey, newData.lastUpdate!.toIso8601String());
-    // }
+    await prefs.setString('id', newData.id);
+    await prefs.setString('ownerId', newData.ownerId);
+    await prefs.setStringList('sharedWith', newData.sharedWith);
+    String itemsJson = newData.items.isNotEmpty
+        ? jsonEncode(newData.items.map((item) => itemToJson(item)).toList())
+        : '';
+    await prefs.setString('items', itemsJson);
+
   }
 }
