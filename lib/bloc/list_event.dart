@@ -38,3 +38,11 @@ class UpdateCloudProviderEvent extends ListEvent {
   final String provider;
   UpdateCloudProviderEvent(this.provider);
 }
+
+class RefreshDarataEvent extends ListEvent {}
+
+class ToggleItemCheckEvent extends ListEvent {
+  final String category;
+  final int index;
+  ToggleItemCheckEvent(this.category, this.index);
+}

@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dailybudget/Model/list_data_model.dart';
 
 class LocalStorageServiceList {
   final ListDataModel dataModel;
-  static const _dataKey = 'app_data_list';
+  // static const _dataKey = 'app_data_list';
   late SharedPreferences prefs;
   
 

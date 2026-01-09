@@ -1,11 +1,11 @@
 // add bloc 
 import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:dailybudget/Model/settings_data_model.dart';
-import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/main.dart';
 import 'package:dailybudget/pages/list_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,8 @@ class CommonListPage extends StatefulWidget {
 }
 
 class _CommonListPageState extends State<CommonListPage> {
-  List<Item> _items = [];
+  // List<Item> _items = [];
+  Map<String, List<Item>> _categories = {};
   AppLocalizations? loc;
 
   void _openSettings(BuildContext context) {
@@ -31,119 +32,82 @@ class _CommonListPageState extends State<CommonListPage> {
   @override
   void initState() {
     super.initState();
-    LoadListDataEvent();
-    _items = context.read<ListBloc>().state.data.items;
-    // _loadItems();
+    context.read<ListBloc>().add(LoadListDataEvent());
+    _categories = context.read<ListBloc>().state.data.catItems;
   }
-  // TODO: move to service
-  // Future<void> _loadItems() async {
-  //   context.read<ListBloc>().add(LoadDataEvent());
 
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? itemsJson = prefs.getString('items');
-  //   if (itemsJson != null) {
-  //     setState(() {
-  //       _items = List<Map<String, dynamic>>.from(json.decode(itemsJson));
-  //     });
-  //   }
-  //   _refreshItems();
+
+
+  // Future<void> _saveItems() async {
+
+  //   context.read<ListBloc>().add(SaveItemEvent(_items.last));
+
+  //   // SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   // await prefs.setString('items', json.encode(_items));
+
+  //   // WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //   //   final settings = Provider.of<SettingsModel>(context, listen: false);
+
+  //   //   bool useCloud = settings.useCloud;
+  //   //   if (useCloud && !isPC()) {
+  //   //     await settings.cloudProvider.uploadData('shoppingLists', {
+  //   //       'id': settings.email,
+  //   //       'items': _items,
+  //   //     });
+  //   //   }
+  //   // });
   // }
-
-  // Future<void> _refreshItems() async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     final settings = Provider.of<SettingsModel>(context, listen: false);
-
-  //     bool useCloud = settings.useCloud;
-  //     if (useCloud && !isPC()) {
-  //       await settings.cloudProvider.fetchData('shoppingLists', settings.email).then((data) {
-  //         setState(() {
-  //           if (data.isNotEmpty) {
-  //             if (data[0]["Error"]!= null) {
-  //               _items = [];
-  //               settings.infoMessage = "Potwierdź email zanim się zalogujesz";
-  //             } else if (data[0]['items'] != null) {
-  //               _items = List<Map<String, dynamic>>.from(data[0]['items']);
-  //             } else {
-  //               _items = [];
-  //             }
-  //           } else {
-  //             _items = [];
-  //           }
-  //         });
-  //       });
-  //     }
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     await prefs.setString('items', json.encode(_items));
-  //   });
-  // }
-
-  Future<void> _saveItems() async {
-
-    context.read<ListBloc>().add(SaveItemEvent(_items.last));
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setString('items', json.encode(_items));
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   final settings = Provider.of<SettingsModel>(context, listen: false);
-
-    //   bool useCloud = settings.useCloud;
-    //   if (useCloud && !isPC()) {
-    //     await settings.cloudProvider.uploadData('shoppingLists', {
-    //       'id': settings.email,
-    //       'items': _items,
-    //     });
-    //   }
-    // });
-  }
 
   void _addItem() {
-    setState(() {
-      _items.add(itemFromJson({'text': 'NewItem', 'checked': false, 'category': ''}));
-    });
-    _saveItems();
-    _editItem(_items.length - 1);
+    _editItem("default", context.read<ListBloc>().state.data.items.length);
   }
 
-  void _clearAll() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Clear All Items'),
-        content: Text('Are you sure you want to clear all items?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-                setState(() {
-                _items.removeWhere((item) => item.checked == true);
-              });
-              _saveItems();
-              Navigator.of(context).pop();
-            },
-            child: Text('Clear all checked'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _items.clear();
-              });
-              _saveItems();
-              Navigator.of(context).pop();
-            },
-            child: Text('Clear'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
+  // void _clearAll() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text('Clear All Items'),
+  //       content: Text('Are you sure you want to clear all items?'),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () {
+  //               setState(() {
+  //               _items.removeWhere((item) => item.checked == true);
+  //             });
+  //             _saveItems();
+  //             Navigator.of(context).pop();
+  //           },
+  //           child: Text('Clear all checked'),
+  //         ),
+  //         TextButton(
+  //           onPressed: () {
+  //             setState(() {
+  //               _items.clear();
+  //             });
+  //             _saveItems();
+  //             Navigator.of(context).pop();
+  //           },
+  //           child: Text('Clear'),
+  //         ),
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(),
+  //           child: Text('Cancel'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  void _editItem(int index) {
+  void _editItem(String category, int index) {
+    if(_categories.keys.contains(category) == false){
+      _categories[category] = [Item('NewItem')];
+    }else{
+      _categories[category]!.add(Item('NewItem'));
+    }
+
+
     TextEditingController controller =
-        TextEditingController(text: _items[index].text);
+        TextEditingController(text: _categories[category]![index].text);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selection = TextSelection(
         baseOffset: 0,
@@ -159,30 +123,21 @@ class _CommonListPageState extends State<CommonListPage> {
           autofocus: true,
           decoration: InputDecoration(hintText: 'Enter new text'),
           onSubmitted: (value) {
-            setState(() {
-              _items[index].text = value;
-            });
-            _saveItems();
+            context.read<ListBloc>().add(AddItemEvent(Item(value)));
             Navigator.of(context).pop();
           },
         ),
         actions: [
           TextButton(
             onPressed: () {
-              setState(() {
-                _items[index].text = controller.text;
-              });
-              _saveItems();
+              context.read<ListBloc>().add(AddItemEvent(Item(controller.text)));
               Navigator.of(context).pop();
             },
             child: Text('Save'),
           ),
           TextButton(
             onPressed: () {
-              setState(() {
-                _items.removeAt(index);
-              });
-              _saveItems();
+              _categories[category]!.removeAt(index);
               Navigator.of(context).pop();
             },
             child: Text('Delete'),
@@ -192,11 +147,8 @@ class _CommonListPageState extends State<CommonListPage> {
     );
   }
 
-  void _toggleCheck(int index) {
-    setState(() {
-      _items[index].checked = !_items[index].checked;
-    });
-    _saveItems();
+  void _toggleCheck(String category, int index) {
+    context.read<ListBloc>().add(ToggleItemCheckEvent(category, index));
   }
 
   @override
@@ -221,48 +173,89 @@ class _CommonListPageState extends State<CommonListPage> {
       ),
       body: BlocBuilder<ListBloc, ListState>(
         builder: (context, state) {
+          _categories = state.data.catItems;
           return Column(
-        children: [
-          if (settings.infoMessage != "" && settings.infoMessage.isNotEmpty)
-            Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            settings.infoMessage,
-            style: TextStyle(color: Colors.red),
-          ),
-            ),
-          Expanded(
-            child: ListView.builder(
-          itemCount: _items.length,
-          itemBuilder: (context, index) {
-            final item = _items[index];
-            return GestureDetector(
-              onLongPress: () => _editItem(index),
-              child: ListTile(
-            leading: Checkbox(
-              value: item.checked,
-              onChanged: (value) => _toggleCheck(index),
-            ),
-            title: Text(
-              item.text,
-              style: TextStyle(
-                decoration: item.checked
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
+            children: [
+              if (settings.infoMessage != "" && settings.infoMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    settings.infoMessage,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _categories.length,
+                  itemBuilder: (context, index) {
+                    final entry = _categories.entries.toList()[index];
+                    final category = entry.key;
+                    final items = entry.value;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if(category != 'default')
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              category,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                // fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ...items.map(
+                          (item) => GestureDetector(
+                            onLongPress: () => _editItem(category, items.indexOf(item)),
+                            child: ListTile(
+                              leading: Checkbox(
+                                value: item.checked,
+                                onChanged: (value) => _toggleCheck(category, items.indexOf(item)),
+                              ),
+                              title: Text(
+                                item.text,
+                                style: TextStyle(
+                                  decoration: item.checked
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
+                    );
+                  },
+                ),
               ),
-            ),
-              ),
-            );
-          },
-            ),
-          ),
-        ],
+                  //   return GestureDetector(
+                  //     onLongPress: () => _editItem(index),
+                  //     child: ListTile(
+                  //       leading: Checkbox(
+                  //         value: item.checked,
+                  //         onChanged: (value) => _toggleCheck(index),
+                  //         ),
+                  //       title: Text(
+                  //         item.text,
+                  //         style: TextStyle(
+                  //           decoration: item.checked
+                  //           ? TextDecoration.lineThrough
+                  //           : TextDecoration.none,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   );
+                  // },
+              //   ),
+              // ),
+            ],
           );
         },
       ),
       floatingActionButton: GestureDetector(
         onLongPress: () {
-          _clearAll();
+          // _clearAll();
         },
         child: FloatingActionButton(
           onPressed: _addItem,

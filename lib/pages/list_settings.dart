@@ -9,10 +9,8 @@ import 'package:dailybudget/features/auth_service.dart';
 import 'package:dailybudget/features/use_cloud.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/main.dart' show isPC;
-import 'package:dailybudget/pages/log.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListSettingsPage extends StatelessWidget {
@@ -54,13 +52,6 @@ class _ListSettingsViewState extends State<ListSettingsView> {
     _logByEmailController.dispose();
     _cloudController.dispose();
     super.dispose();
-  }
-
-  void _openLog(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LogPage()),
-    );
   }
 
   @override

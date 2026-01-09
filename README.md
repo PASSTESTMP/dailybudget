@@ -157,5 +157,43 @@ List
 6. add firebase
 
 
+
+1. feature:
+    - cloud
+    - shared preferences
+    - settings
+    - localization
+2. bloc:
+    - bloc
+    - events:
+        - init()
+        - add
+        - refresh
+        - clear
+        - delete
+    - state
+        - items list
+        - items_segregate map
+        - show popup - add/edit
+        - show popup - delete
+        - show context menu (delete/edit)
+3. ui:
+    - background
+    - item - check box with label
+    - category - line with label
+    - popup add/edit
+    - context menu (delete/edit)
+
+    inputs:
+    - loc
+    - items_segregate:
+        - category:
+            - text
+            - checked
+    
+
+    
+
+
 Product
 t.b.d.
