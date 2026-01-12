@@ -62,41 +62,35 @@ class _CommonListPageState extends State<CommonListPage> {
     _editItem("default", context.read<ListBloc>().state.data.items.length);
   }
 
-  // void _clearAll() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text('Clear All Items'),
-  //       content: Text('Are you sure you want to clear all items?'),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () {
-  //               setState(() {
-  //               _items.removeWhere((item) => item.checked == true);
-  //             });
-  //             _saveItems();
-  //             Navigator.of(context).pop();
-  //           },
-  //           child: Text('Clear all checked'),
-  //         ),
-  //         TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               _items.clear();
-  //             });
-  //             _saveItems();
-  //             Navigator.of(context).pop();
-  //           },
-  //           child: Text('Clear'),
-  //         ),
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(),
-  //           child: Text('Cancel'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  void _clearAll() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Clear All Items'),
+        content: Text('Are you sure you want to clear all items?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+                context.read<ListBloc>().add(RemoveCheckedItemEvent());
+              Navigator.of(context).pop();
+            },
+            child: Text('Clear all checked'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<ListBloc>().add(RemoveAllItemEvent());
+              Navigator.of(context).pop();
+            },
+            child: Text('Clear'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _editItem(String category, int index) {
     if(_categories.keys.contains(category) == false){
@@ -137,7 +131,8 @@ class _CommonListPageState extends State<CommonListPage> {
           ),
           TextButton(
             onPressed: () {
-              _categories[category]!.removeAt(index);
+              // _categories[category]!.removeAt(index);
+              context.read<ListBloc>().add(DeleteItemEvent(category, index));
               Navigator.of(context).pop();
             },
             child: Text('Delete'),
@@ -255,7 +250,7 @@ class _CommonListPageState extends State<CommonListPage> {
       ),
       floatingActionButton: GestureDetector(
         onLongPress: () {
-          // _clearAll();
+          _clearAll();
         },
         child: FloatingActionButton(
           onPressed: _addItem,

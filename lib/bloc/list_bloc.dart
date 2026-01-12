@@ -95,6 +95,37 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       await _storageService.saveToPreferences(newData);
     });
 
+    on<DeleteItemEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      final itemsInCategory = newData.catItems[event.category];
+      if (itemsInCategory != null && event.index >= 0 && event.index < itemsInCategory.length) {
+        final itemToRemove = itemsInCategory[event.index];
+        newData.items.remove(itemToRemove);
+      }
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
+    on<RemoveCheckedItemEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      newData.items.removeWhere((item) => item.checked == true);
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
+    on<RemoveAllItemEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      newData.items.clear();
+
+      emit(ListState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
     _init();
   }
 

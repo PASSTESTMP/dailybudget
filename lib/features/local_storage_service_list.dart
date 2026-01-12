@@ -21,7 +21,7 @@ class LocalStorageServiceList {
     String? itemsJson = prefs.getString('items');
 
 
-    if (itemsJson != null) {
+    if (itemsJson != null && itemsJson.isNotEmpty) {
       final itemsToDecode = List<Map<String, dynamic>>.from(jsonDecode(itemsJson));
       dataModel.items = itemsToDecode
           .map((itemJson) => itemFromJson(itemJson))

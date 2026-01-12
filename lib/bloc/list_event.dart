@@ -46,3 +46,12 @@ class ToggleItemCheckEvent extends ListEvent {
   final int index;
   ToggleItemCheckEvent(this.category, this.index);
 }
+
+class DeleteItemEvent extends ListEvent {
+  final String category;
+  final int index;
+  DeleteItemEvent(this.category, this.index);
+}
+
+class RemoveCheckedItemEvent extends ListEvent {}
+class RemoveAllItemEvent extends ListEvent {}
