@@ -208,14 +208,26 @@ class _CommonListPageState extends State<CommonListPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (category != 'default')
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              category,
-                              style: const TextStyle(fontSize: 18),
-                            ),
+                        
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              if (category != 'default')
+                                Text(
+                                  category,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Container(
+                                height: 1,
+                                color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
                         ...items.map(
                           (item) => GestureDetector(
                             onLongPress: () => _editItem(category, items.indexOf(item)),
