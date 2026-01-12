@@ -39,5 +39,14 @@
   "userCloud": "Własny Backend",
   "password": "Hasło",
   "errInitFire": "Błąd inicjalizacji Firebase: {e}",
-  "errUploFire": "Błąd przesyłania danych: {e}"
+  "errUploFire": "Błąd przesyłania danych: {e}",
+  "clearAllLabel": "Wyczyść wszystko",
+  "allItemsLabel": "Czy na pewno chcesz wyczyścić wszystko?",
+  "clearChackedLabel": "Wyczyść zaznaczone",
+  "clearLabel": "Wyczyść",
+  "cancelLabel": "Anuluj",
+  "editLabel": "Edytuj",
+  "enterNewLabel": "Wpisz nową nazwę",
+  "saveLabel": "Zapisz",
+  "deleteLabel": "Usuń"
 }

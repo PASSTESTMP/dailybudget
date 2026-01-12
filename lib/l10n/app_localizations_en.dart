@@ -135,4 +135,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String errUploFire(Object e) {
     return 'Error uploading data: $e';
   }
+
+  @override
+  String get clearAllLabel => 'Clear All Items';
+
+  @override
+  String get allItemsLabel => 'Are you sure you want to clear all items?';
+
+  @override
+  String get clearChackedLabel => 'Clear all checked';
+
+  @override
+  String get clearLabel => 'Clear';
+
+  @override
+  String get cancelLabel => 'Cancel';
+
+  @override
+  String get editLabel => 'Edit Item';
+
+  @override
+  String get enterNewLabel => 'Enter new text';
+
+  @override
+  String get saveLabel => 'Save';
+
+  @override
+  String get deleteLabel => 'Delete';
 }

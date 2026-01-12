@@ -343,6 +343,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error uploading data: {e}'**
   String errUploFire(Object e);
+
+  /// No description provided for @clearAllLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Items'**
+  String get clearAllLabel;
+
+  /// No description provided for @allItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all items?'**
+  String get allItemsLabel;
+
+  /// No description provided for @clearChackedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all checked'**
+  String get clearChackedLabel;
+
+  /// No description provided for @clearLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearLabel;
+
+  /// No description provided for @cancelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelLabel;
+
+  /// No description provided for @editLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Item'**
+  String get editLabel;
+
+  /// No description provided for @enterNewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new text'**
+  String get enterNewLabel;
+
+  /// No description provided for @saveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveLabel;
+
+  /// No description provided for @deleteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteLabel;
 }
 
 class _AppLocalizationsDelegate

@@ -39,5 +39,14 @@
   "userCloud": "User Backend",
   "password": "Password",
   "errInitFire": "Error initializing Firebase: {e}",
-  "errUploFire": "Error uploading data: {e}"
+  "errUploFire": "Error uploading data: {e}",
+  "clearAllLabel": "Clear All Items",
+  "allItemsLabel": "Are you sure you want to clear all items?",
+  "clearChackedLabel": "Clear all checked",
+  "clearLabel": "Clear",
+  "cancelLabel": "Cancel",
+  "editLabel": "Edit Item",
+  "enterNewLabel": "Enter new text",
+  "saveLabel": "Save",
+  "deleteLabel": "Delete"
 }

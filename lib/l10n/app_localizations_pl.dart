@@ -137,4 +137,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String errUploFire(Object e) {
     return 'Błąd przesyłania danych: $e';
   }
+
+  @override
+  String get clearAllLabel => 'Wyczyść wszystko';
+
+  @override
+  String get allItemsLabel => 'Czy na pewno chcesz wyczyścić wszystko?';
+
+  @override
+  String get clearChackedLabel => 'Wyczyść zaznaczone';
+
+  @override
+  String get clearLabel => 'Wyczyść';
+
+  @override
+  String get cancelLabel => 'Anuluj';
+
+  @override
+  String get editLabel => 'Edytuj';
+
+  @override
+  String get enterNewLabel => 'Wpisz nową nazwę';
+
+  @override
+  String get saveLabel => 'Zapisz';
+
+  @override
+  String get deleteLabel => 'Usuń';
 }

@@ -5,7 +5,6 @@ import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
-import 'package:dailybudget/main.dart';
 import 'package:dailybudget/pages/list_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +17,9 @@ class CommonListPage extends StatefulWidget {
 }
 
 class _CommonListPageState extends State<CommonListPage> {
-  // List<Item> _items = [];
   Map<String, List<Item>> _categories = {};
-  AppLocalizations? loc;
+  late AppLocalizations loc;
+  late SettingsDataModel settings;
 
   void _openSettings(BuildContext context) {
     Navigator.push(
@@ -32,60 +31,40 @@ class _CommonListPageState extends State<CommonListPage> {
   @override
   void initState() {
     super.initState();
+    settings = SettingsDataModel();
+    settings.loadSettings();
     context.read<ListBloc>().add(LoadListDataEvent());
-    _categories = context.read<ListBloc>().state.data.catItems;
   }
-
-
-
-  // Future<void> _saveItems() async {
-
-  //   context.read<ListBloc>().add(SaveItemEvent(_items.last));
-
-  //   // SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // await prefs.setString('items', json.encode(_items));
-
-  //   // WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //   //   final settings = Provider.of<SettingsModel>(context, listen: false);
-
-  //   //   bool useCloud = settings.useCloud;
-  //   //   if (useCloud && !isPC()) {
-  //   //     await settings.cloudProvider.uploadData('shoppingLists', {
-  //   //       'id': settings.email,
-  //   //       'items': _items,
-  //   //     });
-  //   //   }
-  //   // });
-  // }
 
   void _addItem() {
     _editItem("default", context.read<ListBloc>().state.data.items.length);
   }
 
   void _clearAll() {
+    loc = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Clear All Items'),
-        content: Text('Are you sure you want to clear all items?'),
+        title: Text(loc.clearAllLabel),
+        content: Text(loc.allItemsLabel),
         actions: [
           TextButton(
             onPressed: () {
-                context.read<ListBloc>().add(RemoveCheckedItemEvent());
+              context.read<ListBloc>().add(RemoveCheckedItemEvent());
               Navigator.of(context).pop();
             },
-            child: Text('Clear all checked'),
+            child: Text(loc.clearChackedLabel),
           ),
           TextButton(
             onPressed: () {
               context.read<ListBloc>().add(RemoveAllItemEvent());
               Navigator.of(context).pop();
             },
-            child: Text('Clear'),
+            child: Text(loc.clearLabel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: Text(loc.cancelLabel),
           ),
         ],
       ),
@@ -93,29 +72,28 @@ class _CommonListPageState extends State<CommonListPage> {
   }
 
   void _editItem(String category, int index) {
-    if(_categories.keys.contains(category) == false){
-      _categories[category] = [Item('NewItem')];
-    }else{
-      _categories[category]!.add(Item('NewItem'));
+    TextEditingController controller = TextEditingController();
+    loc = AppLocalizations.of(context)!;
+    
+    if (_categories[category] != null && index < _categories[category]!.length) {
+      controller.text = _categories[category]![index].text;
     }
-
-
-    TextEditingController controller =
-        TextEditingController(text: _categories[category]![index].text);
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selection = TextSelection(
         baseOffset: 0,
         extentOffset: controller.text.length,
       );
     });
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Item'),
+        title: Text(loc.editLabel),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: InputDecoration(hintText: 'Enter new text'),
+          decoration: InputDecoration(hintText: loc.enterNewLabel),
           onSubmitted: (value) {
             context.read<ListBloc>().add(AddItemEvent(Item(value)));
             Navigator.of(context).pop();
@@ -127,15 +105,14 @@ class _CommonListPageState extends State<CommonListPage> {
               context.read<ListBloc>().add(AddItemEvent(Item(controller.text)));
               Navigator.of(context).pop();
             },
-            child: Text('Save'),
+            child: Text(loc.saveLabel),
           ),
           TextButton(
             onPressed: () {
-              // _categories[category]!.removeAt(index);
               context.read<ListBloc>().add(DeleteItemEvent(category, index));
               Navigator.of(context).pop();
             },
-            child: Text('Delete'),
+            child: Text(loc.deleteLabel),
           ),
         ],
       ),
@@ -148,15 +125,12 @@ class _CommonListPageState extends State<CommonListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = SettingsDataModel();
-    settings.loadSettings();
-
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<ListBloc, ListState>(
           builder: (context, state) {
-            loc = AppLocalizations.of(context);
-            return Text(loc!.commonListTitle);
+            loc = AppLocalizations.of(context)!;
+            return Text(loc.commonListTitle);
           },
         ),
         actions: [
@@ -171,12 +145,12 @@ class _CommonListPageState extends State<CommonListPage> {
           _categories = state.data.catItems;
           return Column(
             children: [
-              if (settings.infoMessage != "" && settings.infoMessage.isNotEmpty)
+              if (settings.infoMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     settings.infoMessage,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
               Expanded(
@@ -189,15 +163,12 @@ class _CommonListPageState extends State<CommonListPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if(category != 'default')
+                        if (category != 'default')
                           Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(
                               category,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                // fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                         ...items.map(
@@ -212,49 +183,27 @@ class _CommonListPageState extends State<CommonListPage> {
                                 item.text,
                                 style: TextStyle(
                                   decoration: item.checked
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
+                                      ? TextDecoration.lineThrough
+                                      : TextDecoration.none,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ]
+                      ],
                     );
                   },
                 ),
               ),
-                  //   return GestureDetector(
-                  //     onLongPress: () => _editItem(index),
-                  //     child: ListTile(
-                  //       leading: Checkbox(
-                  //         value: item.checked,
-                  //         onChanged: (value) => _toggleCheck(index),
-                  //         ),
-                  //       title: Text(
-                  //         item.text,
-                  //         style: TextStyle(
-                  //           decoration: item.checked
-                  //           ? TextDecoration.lineThrough
-                  //           : TextDecoration.none,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
-              //   ),
-              // ),
             ],
           );
         },
       ),
       floatingActionButton: GestureDetector(
-        onLongPress: () {
-          _clearAll();
-        },
+        onLongPress: _clearAll,
         child: FloatingActionButton(
           onPressed: _addItem,
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
       ),
     );
