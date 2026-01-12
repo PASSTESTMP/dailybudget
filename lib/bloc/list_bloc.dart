@@ -59,7 +59,20 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.add(event.item);
 
-      emit(ListState(newData));
+      emit(ListUpdatedState(newData));
+      await _storageService.saveToPreferences(newData);
+    });
+
+    on<EditItemEvent>((event, emit) async {
+      final newData = await _storageService.getFromPreferences();
+
+      final itemsInCategory = newData.catItems[event.category];
+      if (itemsInCategory != null && event.index >= 0 && event.index < itemsInCategory.length) {
+        newData.catItems[event.category]![event.index].text = event.item.text;
+        newData.catItems[event.category]![event.index].category = event.item.category;
+      }
+      
+      emit(ListUpdatedState(newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -104,7 +117,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         newData.items.remove(itemToRemove);
       }
 
-      emit(ListState(newData));
+      emit(ListUpdatedState(newData));
       await _storageService.saveToPreferences(newData);
     });
 

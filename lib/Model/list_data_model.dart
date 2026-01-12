@@ -32,6 +32,7 @@ Map<String, dynamic> itemToJson(Item item) {
 Item itemFromJson(Map<String, dynamic> json) {
   return Item(
     json['text'] as String,
+    category: json['category'] as String? ?? 'default',
   )..checked = json['checked'] as bool? ?? false;
 }
 

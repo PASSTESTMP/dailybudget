@@ -73,11 +73,17 @@ class _CommonListPageState extends State<CommonListPage> {
 
   void _editItem(String category, int index) {
     TextEditingController controller = TextEditingController();
+    String categoryOld = category;
+    int indexOld = index;
+    bool isEdit = false;
     loc = AppLocalizations.of(context)!;
     
     if (_categories[category] != null && index < _categories[category]!.length) {
       controller.text = _categories[category]![index].text;
+      isEdit = true;
     }
+
+
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selection = TextSelection(
@@ -88,33 +94,72 @@ class _CommonListPageState extends State<CommonListPage> {
     
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(loc.editLabel),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: loc.enterNewLabel),
-          onSubmitted: (value) {
-            context.read<ListBloc>().add(AddItemEvent(Item(value)));
+      builder: (context) => BlocListener<ListBloc, ListState>(
+        listener: (context, state) {
+          if (state is ListUpdatedState) {
             Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              context.read<ListBloc>().add(AddItemEvent(Item(controller.text)));
-              Navigator.of(context).pop();
+          }
+        },
+        child: AlertDialog(
+          title: Text(loc.editLabel),
+          content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(hintText: loc.enterNewLabel),
+            onSubmitted: (value) {
+              if (isEdit){
+                context.read<ListBloc>().add(EditItemEvent(categoryOld, Item(value, category: category), indexOld));
+              }else{
+                context.read<ListBloc>().add(AddItemEvent(Item(value, category: category)));
+              }
             },
-            child: Text(loc.saveLabel),
           ),
-          TextButton(
-            onPressed: () {
-              context.read<ListBloc>().add(DeleteItemEvent(category, index));
-              Navigator.of(context).pop();
+          Autocomplete<String>(
+            optionsBuilder: (TextEditingValue textEditingValue) {
+          return _categories.keys
+            .where((cat) => cat.toLowerCase().contains(textEditingValue.text.toLowerCase()))
+            .toList();
             },
-            child: Text(loc.deleteLabel),
+            onSelected: (String selection) {
+          category = selection;
+            },
+            fieldViewBuilder: (context, catController, focusNode, onFieldSubmitted) {
+          catController.text = category;
+          return TextField(
+            controller: catController,
+            focusNode: focusNode,
+            decoration: InputDecoration(hintText: loc.enterNewLabel),
+            onSubmitted: (value) {
+              category = value;
+            },
+          );
+            },
           ),
         ],
+          ),
+          actions: [
+        TextButton(
+          onPressed: () {
+            if (isEdit){
+              context.read<ListBloc>().add(EditItemEvent(categoryOld, Item(controller.text, category: category), indexOld));
+            }else{
+              context.read<ListBloc>().add(AddItemEvent(Item(controller.text, category: category)));
+            }
+          },
+          child: Text(loc.saveLabel),
+        ),
+        TextButton(
+          onPressed: () {
+            context.read<ListBloc>().add(DeleteItemEvent(category, index));
+          },
+          child: Text(loc.deleteLabel),
+        ),
+          ],
+        ),
       ),
     );
   }

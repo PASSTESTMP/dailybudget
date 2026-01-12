@@ -9,6 +9,13 @@ class AddItemEvent extends ListEvent {
   AddItemEvent(this.item);
 }
 
+class EditItemEvent extends ListEvent {
+  final String category;
+  final Item item;
+  final int index;
+  EditItemEvent(this.category, this.item, this.index);
+}
+
 class RemoveItemEvent extends ListEvent {
   final int index;
   RemoveItemEvent(this.index);
