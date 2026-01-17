@@ -132,7 +132,7 @@ class _ListSettingsPageState extends State<ListSettingsPage> {
                     _buildTextField(context, loc.email, _emailController,
                         (value) => settings.email = value),
                     _buildTextField(context, loc.password, _passwordController,
-                        (value) => settings.password = value),
+                        (value) => settings.password = value, isPassword: true),
                     const SizedBox(height: 20),
 
                     DropdownButton<CloudProvider>(
@@ -169,10 +169,12 @@ class _ListSettingsPageState extends State<ListSettingsPage> {
     );
   }
   Widget _buildTextField(BuildContext context, String label,
-      TextEditingController controller, void Function(String) onChanged) {
+      TextEditingController controller, void Function(String) onChanged, {bool isPassword = false}) {
+        bool obscureText = isPassword;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
+        obscureText: obscureText,
         controller: controller,
         // keyboardType: const TextInputType.numberWithOptions(
         //   decimal: true,
@@ -183,7 +185,18 @@ class _ListSettingsPageState extends State<ListSettingsPage> {
         // ],
         decoration: InputDecoration(
           labelText: label,
-          // suffix: isInt ? Text("") : Text(_currency!),
+          // suffixIcon: isPassword
+          //     ? IconButton(
+          //         icon: Icon(
+          //           _obscureText ? Icons.visibility : Icons.visibility_off,
+          //         ),
+          //         onPressed: () {
+          //           setState(() {
+          //             _obscureText = !_obscureText;
+          //           });
+          //         },
+          //       )
+          //     : null,
           border: const OutlineInputBorder(),
         ),
         onFieldSubmitted: onChanged,

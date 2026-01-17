@@ -1,7 +1,9 @@
+import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/features/local_storage_service_list.dart';
+import 'package:dailybudget/main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListBloc extends Bloc<ListEvent, ListState> {
@@ -26,42 +28,59 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       final newSettings = SettingsDataModel();
       await newSettings.loadSettings();
 
+      final newData = await _storageService.getFromPreferences();
+
+      newData.id = newSettings.email;
+      newData.ownerId = newSettings.email;
+
+
+      await _storageService.saveToPreferences(newData);
+
+      // Here put any additional logic needed to sync data with settings
+
       emit(state.copyWith(settings: newSettings));
+      emit(state.copyWith(data: newData));
     });
 
 
     on<LoadListDataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
+      final newSettings = SettingsDataModel();
+      await newSettings.loadSettings();
+
+      newData.id = newSettings.email;
+      newData.ownerId = newSettings.email;
 
       newData.updated = false;
       emit(state.copyWith(data: newData));
+
+      await _storageService.saveToPreferences(newData);
     });
 
     on<RefreshDarataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
+      ListDataModel newDataFromCloud = ListDataModel.initial();
       final settings = SettingsDataModel();
-      settings.loadSettings();
+      await settings.loadSettings();
 
-      await settings.cloudProvider.fetchData('shoppingLists', settings.email).then((data) {
-          // setState(() {
-          //   if (data.isNotEmpty) {
-          //     if (data[0]["Error"]!= null) {
-          //       _items = [];
-          //       settings.infoMessage = "Potwierdź email zanim się zalogujesz";
-          //     } else if (data[0]['items'] != null) {
-          //       _items = List<Map<String, dynamic>>.from(data[0]['items']);
-          //     } else {
-          //       _items = [];
-          //     }
-          //   } else {
-          //     _items = [];
-          //   }
-          // });
+      bool useCloud = state.settings.useCloud;
+      if (useCloud && !isPC()) {
+        await settings.cloudProvider.fetchData('shoppingLists', settings.email).then((data) {
+          if (data.isNotEmpty) {
+            if (data[0]["Error"]!= null) {
+              settings.infoMessage = "Potwierdź email zanim się zalogujesz";
+            } else {
+              newDataFromCloud = listDataModelFromJson(data[0]);
+            }
+          }
         });
 
-
-      newData.updated = false;
-      emit(state.copyWith(data: newData));
+        await _storageService.saveToPreferences(newDataFromCloud);
+        emit(state.copyWith(data: newDataFromCloud));
+      } else {
+        newData.updated = false;
+        emit(state.copyWith(data: newData));
+      }
     });
 
     on<AddItemEvent>((event, emit) async {
@@ -70,6 +89,11 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       newData.items.add(event.item);
 
       newData.updated = true;
+
+      bool useCloud = state.settings.useCloud;
+      if (useCloud && !isPC()) {
+        await state.settings.cloudProvider.uploadData('shoppingLists', listDataModelToJson(newData));
+      }
 
       emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);

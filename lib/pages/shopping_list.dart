@@ -31,6 +31,7 @@ class _CommonListPageState extends State<CommonListPage> {
     super.initState();
     context.read<ListBloc>().add(LoadSettingsEvent());
     context.read<ListBloc>().add(LoadListDataEvent());
+    context.read<ListBloc>().add(RefreshDarataEvent());
   }
 
   void _addItem() {
