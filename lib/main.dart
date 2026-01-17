@@ -1,16 +1,21 @@
 import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/Model/list_data_model.dart';
+import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
+import 'package:dailybudget/features/auth_service.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/features/local_storage_service_list.dart';
+import 'package:dailybudget/firebase_options.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +34,39 @@ bool isPC() {
 Future<void> main() async {
   // Ensure that the Flutter engine is initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
+
+  final settings = SettingsDataModel();
+  await settings.loadSettings();
+
+  if (settings.useCloud && !isPC()){
+    try{
+      await settings.cloudProvider.initialize();
+    } catch (e) {
+      settings.infoMessage = "Error signing in1: $e";
+    }
+    try{
+      if (settings.cloudProvider.name == "Firebase") {
+        if (settings.logByEmail) {
+          await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+          await AuthService().signInWithEmail(settings.email, settings.password);
+          User? user = FirebaseAuth.instance.currentUser;
+          if (user != null && !user.emailVerified) {
+            await FirebaseAuth.instance.signOut();
+            settings.infoMessage = "Potwierdź email zanim się zalogujesz";
+            // Pokaż komunikat: "Potwierdź email zanim się zalogujesz"
+          }else{
+            settings.infoMessage = "";
+          }
+        } else {
+          await AuthService().signInWithGoogle();
+        }
+      }
+    } catch (e) {
+      String last = settings.infoMessage;
+      settings.infoMessage = "Error signing in2: $e\n$last";
+    }
+  }
+  settings.saveSettings();
 
   // debugPaintSizeEnabled = true;
 
