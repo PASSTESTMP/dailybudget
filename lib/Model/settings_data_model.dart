@@ -48,6 +48,10 @@ class SettingsDataModel {
     }
   }
 
+  static SettingsDataModel initial() {
+    return SettingsDataModel();
+  }
+
   Future<void> saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('infoMessage', infoMessage);

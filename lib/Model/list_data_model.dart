@@ -3,6 +3,7 @@ class ListDataModel {
   List<Item> items = [];
   String ownerId = '';
   List<String> sharedWith = [];
+  bool updated = false;
 
   Map<String, List<Item>> get catItems {
     final Map<String, List<Item>> result = {};
@@ -10,6 +11,10 @@ class ListDataModel {
       result.putIfAbsent(item.category, () => []).add(item);
     }
     return result;
+  }
+
+  static ListDataModel initial() {
+    return ListDataModel();
   }
 }
 

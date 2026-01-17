@@ -62,3 +62,5 @@ class DeleteItemEvent extends ListEvent {
 
 class RemoveCheckedItemEvent extends ListEvent {}
 class RemoveAllItemEvent extends ListEvent {}
+
+class LoadSettingsEvent extends ListEvent {}

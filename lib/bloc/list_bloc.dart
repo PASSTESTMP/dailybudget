@@ -1,4 +1,3 @@
-import 'package:dailybudget/Model/list_data_model.dart';
 import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
@@ -8,8 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ListBloc extends Bloc<ListEvent, ListState> {
   final LocalStorageServiceList _storageService;
 
-  ListBloc(this._storageService) : super(ListState(ListDataModel())){
-
+  ListBloc(this._storageService) : super(ListState.initial()) {
     on<ToggleItemCheckEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
@@ -18,14 +16,25 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         itemsInCategory[event.index].checked = !itemsInCategory[event.index].checked;
       }
 
-      emit(ListState(newData));
+      newData.updated = false;
+
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
+    });
+
+    on<LoadSettingsEvent>((event, emit) async {
+      final newSettings = SettingsDataModel();
+      await newSettings.loadSettings();
+
+      emit(state.copyWith(settings: newSettings));
     });
 
 
     on<LoadListDataEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
-      emit(ListState(newData));
+
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
     });
 
     on<RefreshDarataEvent>((event, emit) async {
@@ -50,8 +59,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
           // });
         });
 
-      
-      emit(ListState(newData));
+
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
     });
 
     on<AddItemEvent>((event, emit) async {
@@ -59,7 +69,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.add(event.item);
 
-      emit(ListUpdatedState(newData));
+      newData.updated = true;
+
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -71,8 +83,10 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         newData.catItems[event.category]![event.index].text = event.item.text;
         newData.catItems[event.category]![event.index].category = event.item.category;
       }
+
+      newData.updated = true;
       
-      emit(ListUpdatedState(newData));
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -81,7 +95,8 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.removeAt(event.index);
 
-      emit(ListState(newData));
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -90,21 +105,24 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.add(event.item);
 
-      emit(ListState(newData));
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
     on<UpdateLogByEmailEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
-      emit(ListState(newData));
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
     on<UpdateCloudProviderEvent>((event, emit) async {
       final newData = await _storageService.getFromPreferences();
 
-      emit(ListState(newData));
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -117,7 +135,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         newData.items.remove(itemToRemove);
       }
 
-      emit(ListUpdatedState(newData));
+      newData.updated = true;
+
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -126,7 +146,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.removeWhere((item) => item.checked == true);
 
-      emit(ListState(newData));
+
+      newData.updated = false;
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 
@@ -135,7 +157,9 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
       newData.items.clear();
 
-      emit(ListState(newData));
+      newData.updated = false;
+
+      emit(state.copyWith(data: newData));
       await _storageService.saveToPreferences(newData);
     });
 

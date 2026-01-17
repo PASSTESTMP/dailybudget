@@ -1,6 +1,5 @@
 // add bloc 
 import 'package:dailybudget/Model/list_data_model.dart';
-import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
 import 'package:dailybudget/bloc/list_state.dart';
@@ -19,7 +18,6 @@ class CommonListPage extends StatefulWidget {
 class _CommonListPageState extends State<CommonListPage> {
   Map<String, List<Item>> _categories = {};
   late AppLocalizations loc;
-  late SettingsDataModel settings;
 
   void _openSettings(BuildContext context) {
     Navigator.push(
@@ -31,8 +29,7 @@ class _CommonListPageState extends State<CommonListPage> {
   @override
   void initState() {
     super.initState();
-    settings = SettingsDataModel();
-    settings.loadSettings();
+    context.read<ListBloc>().add(LoadSettingsEvent());
     context.read<ListBloc>().add(LoadListDataEvent());
   }
 
@@ -96,7 +93,7 @@ class _CommonListPageState extends State<CommonListPage> {
       context: context,
       builder: (context) => BlocListener<ListBloc, ListState>(
         listener: (context, state) {
-          if (state is ListUpdatedState) {
+          if (state.data.updated) {
             Navigator.of(context).pop();
           }
         },
@@ -120,23 +117,23 @@ class _CommonListPageState extends State<CommonListPage> {
           ),
           Autocomplete<String>(
             optionsBuilder: (TextEditingValue textEditingValue) {
-          return _categories.keys
-            .where((cat) => cat.toLowerCase().contains(textEditingValue.text.toLowerCase()))
-            .toList();
+              return _categories.keys
+                .where((cat) => cat.toLowerCase().contains(textEditingValue.text.toLowerCase()))
+                .toList();
             },
             onSelected: (String selection) {
-          category = selection;
+              category = selection;
             },
             fieldViewBuilder: (context, catController, focusNode, onFieldSubmitted) {
-          catController.text = category;
-          return TextField(
-            controller: catController,
-            focusNode: focusNode,
-            decoration: InputDecoration(hintText: loc.enterNewLabel),
-            onSubmitted: (value) {
-              category = value;
-            },
-          );
+              // catController.text = category;
+              return TextField(
+                controller: catController,
+                focusNode: focusNode,
+                decoration: InputDecoration(hintText: loc.enterNewLabel),
+                onSubmitted: (value) {
+                  category = value;
+                },
+              );
             },
           ),
         ],
@@ -190,11 +187,11 @@ class _CommonListPageState extends State<CommonListPage> {
           _categories = state.data.catItems;
           return Column(
             children: [
-              if (settings.infoMessage.isNotEmpty)
+              if (state.settings.infoMessage.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    settings.infoMessage,
+                    state.settings.infoMessage,
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
@@ -213,7 +210,7 @@ class _CommonListPageState extends State<CommonListPage> {
                           padding: const EdgeInsets.all(8),
                           child: Row(
                             children: [
-                              if (category != 'default')
+                              if (category != 'default' && category != "")
                                 Text(
                                   category,
                                   style: const TextStyle(fontSize: 18),

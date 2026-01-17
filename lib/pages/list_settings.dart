@@ -1,10 +1,8 @@
-import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
-import 'package:dailybudget/bloc/list_state.dart';
 import 'package:dailybudget/features/auth_service.dart';
 import 'package:dailybudget/features/use_cloud.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
@@ -13,27 +11,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ListSettingsPage extends StatelessWidget {
+class ListSettingsPage extends StatefulWidget {
   const ListSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return  BlocBuilder<ListBloc, ListState>(
-        builder: (context, state) {
-          return ListSettingsView();
-        }
-      );
-  }
+  State<ListSettingsPage> createState() => _ListSettingsPageState();
 }
 
-class ListSettingsView extends StatefulWidget {
-  const ListSettingsView({super.key});
-
-  @override
-  State<ListSettingsView> createState() => _ListSettingsViewState();
-}
-
-class _ListSettingsViewState extends State<ListSettingsView> {
+class _ListSettingsPageState extends State<ListSettingsPage> {
   final _formKey = GlobalKey<FormState>();
 
   AppLocalizations? loc;
@@ -57,8 +42,8 @@ class _ListSettingsViewState extends State<ListSettingsView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final settings = SettingsDataModel();
-    settings.loadSettings();
+    
+    final settings = context.read<ListBloc>().state.settings;
 
     return BlocBuilder<LimitBloc, LimitState>(
       builder: (context, state) {
