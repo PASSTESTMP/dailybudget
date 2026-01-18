@@ -71,7 +71,7 @@ Future<void> main() async {
   // debugPaintSizeEnabled = true;
 
   // Set the minimum window size for desktop platforms
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (isPC()) {
     setWindowMinSize(const Size(600, 800));
   }else {
     await SystemChrome.setPreferredOrientations([

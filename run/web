@@ -1,0 +1,10 @@
+# run/web
+
+
+
+flutter build web
+
+firebase login
+
+
+firebase deploy
