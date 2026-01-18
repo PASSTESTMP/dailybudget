@@ -152,9 +152,9 @@ List
 3. data model for list:
     - id (always only one, just for cloud identification)
     - items
-4. just show constant shopping list
-5. add shared preferences
-6. add firebase
+4. ~~just show constant shopping list~~
+5. ~~add shared preferences~~
+6. ~~add firebase~~
 
 
 
@@ -191,7 +191,8 @@ List
             - text
             - checked
     
-
+Flowchart:
+Start App -> cloud setted -> read from cloud to shared preferences -> 
     
 
 

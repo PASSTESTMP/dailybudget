@@ -10,8 +10,47 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   final LocalStorageServiceList _storageService;
 
   ListBloc(this._storageService) : super(ListState.initial()) {
+    
+
+    Future<ListDataModel> syncWithCloud() async {
+      ListDataModel newData =  ListDataModel.initial();
+
+      final settings = SettingsDataModel();
+      await settings.loadSettings();
+
+      bool useCloud = state.settings.useCloud;
+      if (useCloud && !isPC()) {
+        await settings.cloudProvider.fetchData('shoppingLists', settings.email).then((data) {
+          if (data.isNotEmpty) {
+            if (data[0]["Error"]!= null) {
+              settings.infoMessage = "Potwierdź email zanim się zalogujesz";
+            } else {
+              newData = listDataModelFromJson(data[0]);
+            }
+          }
+        });
+
+        await _storageService.saveToPreferences(newData);
+      } else {
+        newData = await _storageService.getFromPreferences();
+      }
+      return newData;
+    }
+
+    Future<void> saveNewData(ListDataModel newData) async {
+      final settings = SettingsDataModel();
+      await settings.loadSettings();
+
+      bool useCloud = state.settings.useCloud;
+      if (useCloud && !isPC()) {
+        await state.settings.cloudProvider.uploadData('shoppingLists', listDataModelToJson(newData));
+      }
+
+      await _storageService.saveToPreferences(newData);
+    }
+
     on<ToggleItemCheckEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       final itemsInCategory = newData.catItems[event.category];
       if (itemsInCategory != null && event.index >= 0 && event.index < itemsInCategory.length) {
@@ -21,25 +60,23 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       newData.updated = false;
 
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      
+      await saveNewData(newData);
     });
 
     on<LoadSettingsEvent>((event, emit) async {
-      final newSettings = SettingsDataModel();
-      await newSettings.loadSettings();
+      final settings = SettingsDataModel();
+      await settings.loadSettings();
 
       final newData = await _storageService.getFromPreferences();
 
-      newData.id = newSettings.email;
-      newData.ownerId = newSettings.email;
+      newData.id = settings.email;
+      newData.ownerId = settings.email;
 
+      emit(state.copyWith(settings: settings));
+      emit(state.copyWith(data: newData));
 
       await _storageService.saveToPreferences(newData);
-
-      // Here put any additional logic needed to sync data with settings
-
-      emit(state.copyWith(settings: newSettings));
-      emit(state.copyWith(data: newData));
     });
 
 
@@ -84,23 +121,18 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     });
 
     on<AddItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       newData.items.add(event.item);
 
       newData.updated = true;
 
-      bool useCloud = state.settings.useCloud;
-      if (useCloud && !isPC()) {
-        await state.settings.cloudProvider.uploadData('shoppingLists', listDataModelToJson(newData));
-      }
-
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<EditItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       final itemsInCategory = newData.catItems[event.category];
       if (itemsInCategory != null && event.index >= 0 && event.index < itemsInCategory.length) {
@@ -111,27 +143,27 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       newData.updated = true;
       
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<RemoveItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       newData.items.removeAt(event.index);
 
       newData.updated = false;
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<SaveItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       newData.items.add(event.item);
 
       newData.updated = false;
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<UpdateLogByEmailEvent>((event, emit) async {
@@ -151,7 +183,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     });
 
     on<DeleteItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       final itemsInCategory = newData.catItems[event.category];
       if (itemsInCategory != null && event.index >= 0 && event.index < itemsInCategory.length) {
@@ -162,29 +194,28 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       newData.updated = true;
 
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<RemoveCheckedItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       newData.items.removeWhere((item) => item.checked == true);
 
-
       newData.updated = false;
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     on<RemoveAllItemEvent>((event, emit) async {
-      final newData = await _storageService.getFromPreferences();
+      final newData = await syncWithCloud();
 
       newData.items.clear();
 
       newData.updated = false;
 
       emit(state.copyWith(data: newData));
-      await _storageService.saveToPreferences(newData);
+      await saveNewData(newData);
     });
 
     _init();
