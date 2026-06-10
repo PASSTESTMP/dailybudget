@@ -1,21 +1,21 @@
 class Product {
   final String name;
-  final int actualQuantity;
-  final int targetQuantity;
+  final int quantity;
+  final int target;
   final int threshold;
 
   Product({
     required this.name,
-    required this.actualQuantity,
-    required this.targetQuantity,
+    required this.quantity,
+    required this.target,
     required this.threshold,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       name: json['name'],
-      actualQuantity: json['actualQuantity'],
-      targetQuantity: json['targetQuantity'],
+      quantity: json['quantity'],
+      target: json['target'],
       threshold: json['threshold'],
     );
   }
@@ -23,8 +23,8 @@ class Product {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'actualQuantity': actualQuantity,
-      'targetQuantity': targetQuantity,
+      'quantity': quantity,
+      'target': target,
       'threshold': threshold,
     };
   }

@@ -307,11 +307,13 @@ class _OverviewPageState extends State<OverviewPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           FloatingActionButton(
+            heroTag: 'overview_list_fab',
             onPressed: () => _openListPage(context),
             child: Icon(Icons.list),
             // backgroundColor: Colors.green,
           ),
           FloatingActionButton(
+            heroTag: 'overview_product_fab',
             onPressed: () => _openProductPage(context),
             child: Icon(Icons.star),
             // backgroundColor: Colors.red,

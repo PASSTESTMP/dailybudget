@@ -3,8 +3,6 @@ import 'package:dailybudget/bloc/product_event.dart';
 import 'package:dailybudget/bloc/product_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Model/product_data_model.dart';
 
@@ -39,13 +37,17 @@ class _DefaultListPageState extends State<DefaultListPage> {
               itemBuilder: (context, index) {
                 final product = products[index];
                 Color backgroundColor;
+                Color textColor = Colors.white;
 
-                if (product.actualQuantity > product.threshold) {
+                if (product.quantity > product.threshold) {
                   backgroundColor = Colors.green;
-                } else if (product.actualQuantity == product.threshold) {
+                  textColor = Colors.white;
+                } else if (product.quantity == product.threshold) {
                   backgroundColor = Colors.yellow;
+                  textColor = Colors.black;
                 } else {
                   backgroundColor = Colors.red;
+                  textColor = Colors.white;
                 }
 
             return Container(
@@ -60,11 +62,11 @@ class _DefaultListPageState extends State<DefaultListPage> {
                 children: [
                   GestureDetector(
                     onLongPress: () {
-                      // showAddProductDialog(context, products, product, _saveProducts);
+                      showAddProductDialog(context, products, product);
                     },
                     child: Text(
                       product.name,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
                     ),
                   ),
                   Row(children: [
@@ -74,8 +76,8 @@ class _DefaultListPageState extends State<DefaultListPage> {
                         setState(() {
                           products[index] = Product(
                             name: product.name,
-                            actualQuantity: product.actualQuantity + 1,
-                            targetQuantity: product.targetQuantity,
+                            quantity: product.quantity + 1,
+                            target: product.target,
                             threshold: product.threshold,
                           );
                         });
@@ -83,18 +85,18 @@ class _DefaultListPageState extends State<DefaultListPage> {
                     },
                   ),
                   Text(
-                    '${product.actualQuantity} / ${product.targetQuantity}',
-                    style: TextStyle(fontSize: 16),
+                    '${product.quantity} / ${product.target}',
+                    style: TextStyle(fontSize: 16, color: textColor),
                   ),
                   IconButton(
                     icon: Icon(Icons.remove),
                     onPressed: () {
-                      if (product.actualQuantity > 0) {
+                      if (product.quantity > 0) {
                         setState(() {
                           products[index] = Product(
                             name: product.name,
-                            actualQuantity: product.actualQuantity - 1,
-                            targetQuantity: product.targetQuantity,
+                            quantity: product.quantity - 1,
+                            target: product.target,
                             threshold: product.threshold,
                           );
                         });
@@ -114,6 +116,7 @@ class _DefaultListPageState extends State<DefaultListPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'default_list_fab',
         onPressed: () {
           showAddProductDialog(context, products, null);
         },
@@ -144,12 +147,12 @@ void showAddProductDialog(BuildContext context, Products products, Product? prod
               decoration: InputDecoration(labelText: 'Product Name'),
             ),
             TextField(
-              controller: actualQuantityController..text = product?.actualQuantity.toString() ?? '',
+              controller: actualQuantityController..text = product?.quantity.toString() ?? '',
               decoration: InputDecoration(labelText: 'Actual Quantity'),
               keyboardType: TextInputType.number,
             ),
             TextField(
-              controller: targetQuantityController..text = product?.targetQuantity.toString() ?? '',
+              controller: targetQuantityController..text = product?.target.toString() ?? '',
               decoration: InputDecoration(labelText: 'Target Quantity'),
               keyboardType: TextInputType.number,
             ),
@@ -188,8 +191,8 @@ void showAddProductDialog(BuildContext context, Products products, Product? prod
               if (name.isNotEmpty && targetQuantity > 0) {
                 products.add(Product(
                   name: name,
-                  actualQuantity: actualQuantity,
-                  targetQuantity: targetQuantity,
+                  quantity: actualQuantity,
+                  target: targetQuantity,
                   threshold: threshold,
                 ));
                 context.read<ProductBloc>().add(SaveProductsEvent(products: products));

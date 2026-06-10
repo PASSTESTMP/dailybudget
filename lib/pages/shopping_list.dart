@@ -257,6 +257,7 @@ class _CommonListPageState extends State<CommonListPage> {
       floatingActionButton: GestureDetector(
         onLongPress: _clearAll,
         child: FloatingActionButton(
+          heroTag: 'shopping_list_fab',
           onPressed: _addItem,
           child: const Icon(Icons.add),
         ),

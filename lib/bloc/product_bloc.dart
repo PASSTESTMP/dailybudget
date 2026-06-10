@@ -81,9 +81,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       final settings = SettingsDataModel();
       await settings.loadSettings();
 
-      bool useCloud = state.settings.useCloud;
+      bool useCloud = settings.useCloud;
       if (useCloud && !isPC()) {
-        await settings.cloudProvider.fetchData('shoppingLists', settings.email).then((data) {
+        await settings.cloudProvider.fetchData('defaultLists', settings.email).then((data) {
           if (data.isNotEmpty) {
             if (data[0]["Error"]!= null) {
               settings.infoMessage = "Potwierdź email zanim się zalogujesz";
@@ -100,6 +100,21 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       return newData;
     }
 
+    Future<void> saveNewData(Products newData) async {
+      final settings = SettingsDataModel();
+      await settings.loadSettings();
+
+      bool useCloud = settings.useCloud;
+      if (useCloud && !isPC()) {
+        await settings.cloudProvider.uploadData('defaultLists', {
+          'id': settings.email,
+          'products': newData.toJson(),
+        });
+      }
+
+      await _storageService.saveToPreferences(newData);
+    }
+
     on<LoadProductsEvent>((event, emit) async {
       final newData = await syncWithCloud();
       emit(ProductStateLoaded(products: newData, settings: state.settings));
@@ -108,10 +123,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<AddProductEvent>((event, emit) async {
       final newData = await syncWithCloud();
 
-      newData.products.add(Product(name: event.name, actualQuantity: 0, threshold: 0, targetQuantity: 0));
+      newData.products.add(Product(name: event.name, quantity: 0, threshold: 0, target: 0));
 
       await _storageService.saveToPreferences(newData);
       emit(ProductStateLoaded(products: newData, settings: state.settings));
+      await saveNewData(newData);
     });
 
     on<UpdateProductEvent>((event, emit) async {
@@ -123,6 +139,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       await _storageService.saveToPreferences(newData);
       emit(ProductStateLoaded(products: newData, settings: state.settings));
+      await saveNewData(newData);
     });
 
     on<SaveProductsEvent>((event, emit) async {
@@ -130,6 +147,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       await _storageService.saveToPreferences(newData);
       emit(ProductStateLoaded(products: newData, settings: state.settings));
+      await saveNewData(newData);
+    });
+
+    on<RemoveProductEvent>((event, emit) async {
+      final newData = await syncWithCloud();
+
+      newData.products.removeWhere((product) => product.name == event.name);
+
+      await _storageService.saveToPreferences(newData);
+      emit(ProductStateLoaded(products: newData, settings: state.settings));
+      await saveNewData(newData);
     });
   }
 }
