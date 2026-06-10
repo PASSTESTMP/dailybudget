@@ -397,6 +397,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get deleteLabel;
+
+  /// No description provided for @confirmEmailBeforeLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm email before login'**
+  String get confirmEmailBeforeLogin;
+
+  /// No description provided for @noUser.
+  ///
+  /// In en, this message translates to:
+  /// **'No Active User'**
+  String get noUser;
+
+  /// No description provided for @emailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verified'**
+  String get emailVerified;
 }
 
 class _AppLocalizationsDelegate

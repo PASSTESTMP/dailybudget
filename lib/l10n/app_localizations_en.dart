@@ -162,4 +162,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteLabel => 'Delete';
+
+  @override
+  String get confirmEmailBeforeLogin => 'Confirm email before login';
+
+  @override
+  String get noUser => 'No Active User';
+
+  @override
+  String get emailVerified => 'Email verified';
 }

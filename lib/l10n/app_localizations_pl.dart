@@ -164,4 +164,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get deleteLabel => 'Usuń';
+
+  @override
+  String get confirmEmailBeforeLogin => 'Potwierdź email zanim się zalogujesz';
+
+  @override
+  String get noUser => 'Brak użytkownika';
+
+  @override
+  String get emailVerified => 'Email potwierdzony';
 }

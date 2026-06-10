@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:dailybudget/Model/product_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/features/stt_service.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
+import 'package:dailybudget/pages/default_list.dart';
 import 'package:dailybudget/pages/settings.dart';
 import 'package:dailybudget/pages/shopping_list.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,13 @@ class _OverviewPageState extends State<OverviewPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CommonListPage()),
+    );
+  }
+
+  void _openProductPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const DefaultListPage()),
     );
   }
 
@@ -303,10 +312,7 @@ class _OverviewPageState extends State<OverviewPage> {
             // backgroundColor: Colors.green,
           ),
           FloatingActionButton(
-            heroTag: 'gotoProducts',
-            onPressed: () {
-              Navigator.pushNamed(context, '/default_list');
-            },
+            onPressed: () => _openProductPage(context),
             child: Icon(Icons.star),
             // backgroundColor: Colors.red,
           ),

@@ -48,5 +48,8 @@
   "editLabel": "Edytuj",
   "enterNewLabel": "Wpisz nową nazwę",
   "saveLabel": "Zapisz",
-  "deleteLabel": "Usuń"
+  "deleteLabel": "Usuń",
+  "confirmEmailBeforeLogin": "Potwierdź email zanim się zalogujesz",
+  "noUser": "Brak użytkownika",
+  "emailVerified": "Email potwierdzony"
 }

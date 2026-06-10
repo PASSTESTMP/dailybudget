@@ -48,5 +48,8 @@
   "editLabel": "Edit Item",
   "enterNewLabel": "Enter new text",
   "saveLabel": "Save",
-  "deleteLabel": "Delete"
+  "deleteLabel": "Delete",
+  "confirmEmailBeforeLogin": "Confirm email before login",
+  "noUser": "No Active User",
+  "emailVerified": "Email verified"
 }

@@ -106,13 +106,13 @@ class _ListSettingsPageState extends State<ListSettingsPage> {
                               User? user = FirebaseAuth.instance.currentUser;
                               if (user != null && !user.emailVerified) {
                                 await FirebaseAuth.instance.signOut();
-                                settings.infoMessage = "Potwierdź email zanim się zalogujesz";
+                                settings.infoMessage = loc.confirmEmailBeforeLogin;
                                 // Pokaż komunikat: "Potwierdź email zanim się zalogujesz"
                               }else{
                                 if (user == null){
-                                  settings.infoMessage = "Brak użytkownika";
+                                  settings.infoMessage = loc.noUser;
                                 }else{
-                                  settings.infoMessage = "Email potwierdzony";
+                                  settings.infoMessage = loc.emailVerified;
                                 }
                               }
                             } else {

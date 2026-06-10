@@ -1,14 +1,18 @@
 import 'package:dailybudget/Model/data_model.dart';
 import 'package:dailybudget/Model/list_data_model.dart';
+import 'package:dailybudget/Model/product_data_model.dart';
 import 'package:dailybudget/Model/settings_data_model.dart';
 import 'package:dailybudget/bloc/limit_bloc.dart';
 import 'package:dailybudget/bloc/limit_event.dart';
 import 'package:dailybudget/bloc/limit_state.dart';
 import 'package:dailybudget/bloc/list_bloc.dart';
 import 'package:dailybudget/bloc/list_event.dart';
+import 'package:dailybudget/bloc/product_bloc.dart';
+import 'package:dailybudget/bloc/product_event.dart';
 import 'package:dailybudget/features/auth_service.dart';
 import 'package:dailybudget/features/local_storage_service.dart';
 import 'package:dailybudget/features/local_storage_service_list.dart';
+import 'package:dailybudget/features/local_storage_service_prod.dart';
 import 'package:dailybudget/firebase_options.dart';
 import 'package:dailybudget/l10n/app_localizations.dart';
 import 'package:dailybudget/pages/overview.dart';
@@ -88,6 +92,9 @@ Future<void> main() async {
       ),
       BlocProvider(
         create: (_) => ListBloc(LocalStorageServiceList(ListDataModel()))..add(LoadListDataEvent()),
+      ),
+      BlocProvider(
+        create: (_) => ProductBloc(LocalStorageServiceProd(Products(products: [])))..add(LoadProductsEvent()),
       ),
       ],
       child: const DailyBudgetApp(),
