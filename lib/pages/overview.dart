@@ -288,14 +288,14 @@ class _OverviewPageState extends State<OverviewPage> {
                   child: Text(loc!.send),
                 ),
                 // --------- Debug only ---------
-                ElevatedButton(
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.clear();
-                    print('SharedPreferences cleared');
-                  },
-                  child: Text('Clear prefs (debug)'),
-                ),
+                // ElevatedButton(
+                //   onPressed: () async {
+                //     final prefs = await SharedPreferences.getInstance();
+                //     await prefs.clear();
+                //     print('SharedPreferences cleared');
+                //   },
+                //   child: Text('Clear prefs (debug)'),
+                // ),
                 // --------- Debug only end ---------
               ],
             );
